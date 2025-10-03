@@ -1,0 +1,112 @@
+---
+// Component imports
+import Button from "../components/Button.astro";
+
+// assets
+import logo from "../assets/logo.svg";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<header>
+  <div class:list={["header-wrapper", "container", className]}>
+    <a href="/" aria-label="Home" class="logo-link"
+      ><img src={logo.src} alt="" width="135px" /></a
+    >
+
+    <div class="nav-items">
+      <nav class="nav-menu">
+        <ul role="list" class="nav-links">
+          <li class="nav-link active">
+            <a href="/" aria-label="Home" data-page="home">Home</a>
+          </li>
+          <li class="nav-link">
+            <a href="/about" aria-label="About" data-page="about">About</a>
+          </li>
+          <li class="nav-link">
+            <a href="/contact" aria-label="Contact" data-page="contact"
+              >Contact</a
+            >
+          </li>
+          <li class="nav-link">
+            <a href="/services" aria-label="Services" data-page="services"
+              >Services</a
+            >
+          </li>
+          <li class="nav-link">
+            <a href="/studios" aria-label="Studios" data-page="studios"
+              >Studios</a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <div class="nav-btns">
+        <Button
+          href="/contact"
+          class:list={["btn-primary", className]}
+          text="Contact Us"
+          icon="message"
+        />
+        <button class="nav-toggler" aria-label="Hamburger menu"
+          ><span></span></button
+        >
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  const navToggler = document.querySelector(".nav-toggler") as HTMLElement;
+  const navMenu = document.querySelector(".nav-links");
+  const navLinks = document.querySelectorAll(".nav-links a");
+  allEventListners();
+
+  function allEventListners() {
+    navToggler.addEventListener("click", togglerClick);
+    navLinks.forEach((elem) => elem.addEventListener("click", navLinkClick));
+  }
+
+  function togglerClick() {
+    navToggler.classList.toggle("toggler-open");
+    navMenu.classList.toggle("open");
+    document.body.classList.toggle(
+      "no-scroll",
+      navMenu.classList.contains("open")
+    );
+  }
+
+  function navLinkClick() {
+    if (navMenu.classList.contains("open")) {
+      navToggler.click();
+    }
+  }
+
+
+  // active nav link
+  document.addEventListener("DOMContentLoaded", function () {
+    const pages = window.location.pathname.split("/");
+    const links = document.querySelectorAll(".nav-link");
+    const home = document.querySelector("a[data-page='home']")
+      .closest(".nav-link");
+
+    links.forEach((link) => {
+      const linkPage = link.querySelector("a").getAttribute("data-page");
+      if (pages.includes(linkPage)) {
+        link.classList.add("active");
+        home.classList.remove("active");
+      }
+    });
+    if (
+      ["terms-and-conditions", "privacy-policy", "404"].some((page) =>
+        pages.includes(page)
+      )
+    ) {
+      home.classList.remove("active");
+    }
+  });
+</script>

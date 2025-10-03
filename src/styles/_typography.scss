@@ -1,0 +1,55 @@
+@use 'variables' as *;
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/HelveticaNowDisplay-Bold.woff') format('woff');
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/HelveticaNowDisplay-Medium.woff') format('woff');
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+}
+
+body {
+  font-family: $ff-body;
+  font-size: $fs-body;
+  line-height: $lh-body;
+  color: $clr-neutral-200;
+}
+
+.type-h1 {
+  font-family: $ff-header;
+  font-size: $fs-h1;
+  font-weight: 400;
+  line-height: $lh-h1;
+  letter-spacing: 0.32px;
+}
+
+.type-h2 {
+  font-family: $ff-header;
+  font-size: $fs-h2;
+  line-height: $lh-h2;
+  font-weight: $fw-regular;
+  letter-spacing: 0.32px;
+}
+
+.type-h3 {
+  font-family: $ff-body;
+  font-size: $fs-h3;
+  line-height: $lh-h3;
+  font-weight: $fw-semi-bold;
+  letter-spacing: 0.32px;
+}
+
+.type-body {
+  color: $clr-neutral-800;
+  font-size: $fs-body;
+  font-weight: $fw-regular;
+  letter-spacing: 0.32px;
+}
