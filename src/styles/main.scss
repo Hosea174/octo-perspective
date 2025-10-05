@@ -14,13 +14,13 @@ body {
 // Utility classes
 .container {
   max-width: 1450px;
-  padding-inline: $size-600;
+  padding-inline: 2rem;
   margin: 0 auto;
 }
 
 @media screen and (max-width: 700px) {
   .container {
-    padding-inline: $size-250;
+    padding-inline: 0.625rem;
   }
 }
 

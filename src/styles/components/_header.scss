@@ -159,7 +159,7 @@ header {
 
 
         .nav-link {
-          margin-block: $size-450;
+          margin-block: 1.125rem;
           opacity: 0;
           font-size: 4rem;
           font-weight: 600;
@@ -178,7 +178,7 @@ header {
 
       .nav-links.open .nav-link {
         opacity: 1;
-        margin-block: $size-600;
+        margin-block: 2rem;
         padding-block: 0;
       }
     }
