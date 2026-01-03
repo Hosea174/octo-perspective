@@ -8,14 +8,17 @@ import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 
 // styles
-import "../styles/pages/_about.scss";
+import "../styles/pages/about.scss";
 ---
 
-<Layout title="">
+<Layout title="" description="">
   <Header />
 
   <main></main>
 
   <!-- <Footer /> -->
 </Layout>
-<script src="../scripts/pages/index.js"></script>
+<script>
+  import { initAbout } from "../scripts/pages/about.js";
+  initAbout();
+</script>

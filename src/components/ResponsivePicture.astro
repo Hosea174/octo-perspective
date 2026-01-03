@@ -1,0 +1,68 @@
+---
+import { getImage } from "astro:assets";
+
+interface SourceEntry {
+  media: string;
+  src: ImageMetadata;
+  width: number;
+}
+
+interface Props {
+  sources: SourceEntry[];
+  alt: string;
+  class?: string;
+  fetchpriority?: "auto" | "low" | "high";
+}
+
+const {
+  sources,
+  alt,
+  class: className,
+  fetchpriority = "auto",
+  ...rest
+} = Astro.props;
+
+const processedSources = await Promise.all(
+  sources.map(async (entry) => {
+    const processed = await getImage({
+      src: entry.src,
+      format: "webp",
+    });
+    return {
+      media: entry.media,
+      src: processed.src,
+      width: processed.attributes.width,
+      height: processed.attributes.height,
+    };
+  })
+);
+
+const lastSourceEntry = sources[sources.length - 1];
+const processedFallback = await getImage({
+  src: lastSourceEntry.src,
+  format: "webp",
+  widths: [400, 800, 1200],
+});
+
+const lastSource = processedSources[processedSources.length - 1] || {
+  width: processedFallback.attributes.width,
+  height: processedFallback.attributes.height,
+};
+---
+
+<picture class="responsive-img">
+  {
+    processedSources
+      .slice(0, -1)
+      .map((source) => <source media={source.media} srcset={source.src} />)
+  }
+
+  <img
+    class:list={[className]}
+    src={processedFallback.src}
+    alt={alt}
+    width={lastSource.width}
+    height={lastSource.height}
+    fetchpriority={fetchpriority}
+  />
+</picture>

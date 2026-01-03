@@ -1,17 +1,11 @@
-@use 'variables' as *;
 @use 'reset';
 @use 'typography';
 
-// Components
-@use 'components/button';
-@use 'components/header';
-@use 'components/footer';
-
 body {
-  background-color: #1d1a18;
+  background-color: $clr-neutral-100;
 }
 
-// Utility classes
+// Common classes
 .container {
   max-width: 1450px;
   padding-inline: 2rem;
@@ -24,20 +18,44 @@ body {
   }
 }
 
+.img-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+
+    &.cover {
+      object-fit: cover;
+    }
+
+    &.contain {
+      object-fit: contain;
+    }
+  }
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+// Utility classes
 .u-fw-400 {
   font-weight: $fw-regular;
 }
 
 .u-fw-500 {
-  font-weight: $fw-semi-bold;
+  font-weight: $fw-medium;
 }
 
 .u-fw-600 {
-  font-weight: $fw-bold;
+  font-weight: $fw-semi-bold;
 }
 
 .u-fw-700 {
-  font-weight: $fw-bold-2;
+  font-weight: $fw-bold;
 }
 
 .u-italic {
@@ -52,27 +70,6 @@ body {
   margin-inline: auto;
 }
 
-.section-label {
-  border-radius: 8px;
-  border-right: 2px solid rgba(251, 227, 10, 0.90);
-  border-left: 2px solid rgba(251, 227, 10, 0.90);
-  background: #322D11;
-  width: fit-content;
-  padding: 2px 10px;
-}
-
-.img-wrapper {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-
 // Custom scrollbar styles
 ::-webkit-scrollbar {
   width: 12px;
@@ -80,20 +77,32 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #121212;
+  background: $clr-neutral-200;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(90deg, #f0cb0e, #f0af2b);
+  background: $clr-primary-400;
   border-radius: 10px;
-  border: 3px solid #201f1f;
+  border: 3px solid #e9e8e8;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(90deg, #cead0b, #cc9423);
+  background: #D0A21A;
 }
 
 ::-webkit-scrollbar-corner {
   background: #f1f1f1;
+}
+
+// styles for animations
+[data-text-anim],
+[data-fade-in] {
+  visibility: hidden;
+}
+
+.duplicate-char {
+  position: absolute;
+  inset: 0;
+  transform: translateY(100%);
 }

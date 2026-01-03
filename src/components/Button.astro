@@ -1,21 +1,56 @@
 ---
 import { Icon } from "astro-icon/components";
 
+import "../styles/components/button.scss";
+
 interface Props {
   text: string;
-  href: string;
+  href?: string;
+  variant?: "primary" | "secondary-light" | "secondary-dark" | "tertiary";
+  size?: "large" | "small";
   class?: string;
-  icon: string;
+  icon?: string;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
-const { text, href, class: className, icon } = Astro.props;
+const {
+  text,
+  href,
+  variant = "primary",
+  size = "large",
+  class: className,
+  icon,
+  type = "button",
+  disabled = false,
+  ...rest
+} = Astro.props;
+
+const classes = ["btn", `btn--${variant}`, `btn--${size}`, className].filter(
+  Boolean
+);
 ---
 
-<a href={href} class="btn-link">
-  <button class:list={["btn", className]}>
-    <span>{text}</span>
-    <span class="icon-wrap">
-      <Icon name={icon} width={18} height={18} />
-    </span>
-  </button>
-</a>
+{
+  href ? (
+    <a href={href} class="btn-link" {...rest}>
+      <button class:list={classes} type={type} disabled={disabled}>
+        <span class="btn__text">{text}</span>
+        {icon && (
+          <span class="btn__icon">
+            <Icon name={icon} width={12} height={14} />
+          </span>
+        )}
+      </button>
+    </a>
+  ) : (
+    <button class:list={classes} type={type} disabled={disabled} {...rest}>
+      <span class="btn__text">{text}</span>
+      {icon && (
+        <span class="btn__icon">
+          <Icon name={icon} width={12} height={14} />
+        </span>
+      )}
+    </button>
+  )
+}

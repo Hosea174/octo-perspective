@@ -1,0 +1,121 @@
+@use 'variables' as *;
+
+@font-face {
+  font-family: 'Host Grotesk';
+  src: url('/fonts/HostGrotesk-SemiBold.woff') format('woff');
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Host Grotesk';
+  src: url('/fonts/HostGrotesk-Bold.woff') format('woff');
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Host Grotesk';
+  src: url('/fonts/HostGrotesk-Medium.woff') format('woff');
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/HelveticaNowDisplay-Regular.woff') format('woff');
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+}
+
+body {
+  font-family: $ff-body;
+  font-size: $fs-body;
+  line-height: $lh-body;
+  color: $clr-neutral-100;
+  letter-spacing: $ls-body;
+}
+
+.type-display-1 {
+  font-family: $ff-header;
+  font-size: $fs-display-1;
+  font-weight: $fw-semi-bold;
+  line-height: $lh-display-1;
+  letter-spacing: $ls-heading;
+}
+
+.type-display-2 {
+  font-family: $ff-header;
+  font-size: $fs-display-2;
+  font-weight: $fw-semi-bold;
+  line-height: $lh-display-2;
+  letter-spacing: $ls-heading;
+}
+
+.type-header-1 {
+  font-family: $ff-header;
+  font-size: $fs-header-1;
+  font-weight: $fw-bold;
+  line-height: $lh-header-1;
+  letter-spacing: $ls-heading;
+}
+
+.type-header-2 {
+  font-family: $ff-header;
+  font-size: $fs-header-2;
+  font-weight: $fw-bold;
+  line-height: $lh-header-2;
+  letter-spacing: $ls-heading;
+}
+
+.type-header-3 {
+  font-family: $ff-header;
+  font-size: $fs-header-3;
+  font-weight: $fw-semi-bold;
+  line-height: $lh-header-3;
+  letter-spacing: $ls-heading;
+}
+
+.type-header-4 {
+  font-family: $ff-header;
+  font-size: $fs-header-4;
+  font-weight: $fw-medium;
+  line-height: $lh-header-4;
+  letter-spacing: $ls-heading;
+}
+
+.type-header-5 {
+  font-family: $ff-header;
+  font-size: $fs-header-5;
+  font-weight: $fw-medium;
+  line-height: $lh-header-5;
+  letter-spacing: $ls-heading;
+}
+
+.type-body {
+  font-family: $ff-body;
+  font-size: $fs-body;
+  font-weight: $fw-regular;
+  line-height: $lh-body;
+  letter-spacing: $ls-body;
+}
+
+.type-body-sm-1 {
+  font-family: $ff-body;
+  font-size: $fs-body-sm-1;
+  font-weight: $fw-regular;
+  line-height: $lh-body-sm-1;
+  letter-spacing: $ls-body;
+}
+
+.type-body-sm-2 {
+  font-family: $ff-body;
+  font-size: $fs-body-sm-2;
+  font-weight: $fw-regular;
+  line-height: $lh-body-sm-2;
+  letter-spacing: $ls-body;
+}

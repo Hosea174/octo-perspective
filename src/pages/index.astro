@@ -8,13 +8,20 @@ import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 
 // styles
-import "../styles/pages/_index.scss";
+import "../styles/pages/index.scss";
+
+// assets
 ---
 
-<Layout title="">
-  <Header />
+<Layout title="" description="">
+  <Header client:load/>
 
   <main></main>
   <!-- <Footer /> -->
 </Layout>
-<script src="../scripts/pages/index.js"></script>
+
+<script>
+  import { initIndex } from "../scripts/pages/index.js";
+
+  initIndex();
+</script>
