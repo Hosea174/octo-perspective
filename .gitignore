@@ -24,3 +24,7 @@ pnpm-debug.log*
 .idea/
 
 .vscode/
+
+# ai agent files
+# .builder/
+# .kilocode/
