@@ -1,7 +1,6 @@
 ---
-import { Icon } from "astro-icon/components";
-
 import "../styles/components/button.scss";
+import { Icon } from "astro-icon/components";
 
 interface Props {
   text: string;
@@ -35,7 +34,9 @@ const classes = ["btn", `btn--${variant}`, `btn--${size}`, className].filter(
   href ? (
     <a href={href} class="btn-link" {...rest}>
       <button class:list={classes} type={type} disabled={disabled}>
-        <span class="btn__text">{text}</span>
+        <span class="btn__text" data-text-anim="linkAnimation">
+          {text}
+        </span>
         {icon && (
           <span class="btn__icon">
             <Icon name={icon} width={12} height={14} />
@@ -45,7 +46,9 @@ const classes = ["btn", `btn--${variant}`, `btn--${size}`, className].filter(
     </a>
   ) : (
     <button class:list={classes} type={type} disabled={disabled} {...rest}>
-      <span class="btn__text">{text}</span>
+      <span class="btn__text" data-text-anim="linkAnimation">
+        {text}
+      </span>
       {icon && (
         <span class="btn__icon">
           <Icon name={icon} width={12} height={14} />

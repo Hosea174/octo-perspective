@@ -1,11 +1,10 @@
 ---
+import "../styles/components/header.scss";
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 import Button from "./Button.astro";
 
-import "../styles/components/header.scss";
-
-import logo from "../assets/logo.svg";
+import logo from "../assets/ariva-logo.svg";
 
 interface Props {
   class?: string;
@@ -16,14 +15,17 @@ const { class: className } = Astro.props;
 const navItems = [
   { text: "Home", href: "/" },
   { text: "About", href: "/about" },
+  { text: "Services", href: "/#services" },
+  { text: "Projects", href: "/gallery" },
+  { text: "Articles", href: "/articles" },
 ];
 ---
 
 <header class:list={["header", className]}>
-  <div class="header__container container">
+  <div class="header__container container" data-fade-in>
     <div class="header__wrapper">
       <a href="/" class="header__logo">
-        <Image src={logo} alt="Logo" class="header__logo-img" />
+        <Image src={logo} alt="Ariva Logo" class="header__logo-img" />
       </a>
 
       <nav class="header__nav">
@@ -34,6 +36,7 @@ const navItems = [
                 <a
                   href={item.href}
                   class="header__nav-link"
+                  data-text-anim="linkAnimation"
                   aria-label={item.text}
                 >
                   {item.text}
@@ -50,7 +53,7 @@ const navItems = [
           variant="primary"
           size="small"
           icon="arrow"
-          href="https://api.whatsapp.com/send?phone=251911223344"
+          href="#contact"
         />
         <Button
           text="Our Projects"
@@ -71,5 +74,6 @@ const navItems = [
 <script>
   import { initHeader } from "../scripts/components/header.js";
 
+  // Initialize header functionality when DOM is ready
   document.addEventListener("DOMContentLoaded", initHeader);
 </script>

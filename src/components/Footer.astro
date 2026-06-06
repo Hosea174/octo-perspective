@@ -1,7 +1,257 @@
 ---
+import "../styles/components/footer.scss";
+import Button from "./Button.astro";
+import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 
-import "../styles/components/footer.scss";
+import logo from "../assets/ariva-logo.svg";
 
-// assets
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const quickLinks = [
+  { text: "Home", href: "/" },
+  { text: "About Us", href: "/about" },
+  { text: "Services", href: "/#services" },
+  { text: "Contact Us", href: "#contact" },
+  { text: "Projects Gallery", href: "/gallery" },
+  { text: "Articles", href: "/articles" },
+];
+
+const openHours = [
+  "Monday - 8:00 AM to 11:30 PM",
+  "Tuesday - 8:00 AM to 11:30 PM",
+  "Wednesday - 8:00 AM to 11:30 PM",
+  "Thursday - 8:00 AM to 11:30 PM",
+  "Friday - 8:00 AM to 11:30 PM",
+  "Saturday - 8:00 AM to 12:30 PM",
+];
+
+const contactInfo = [
+  {
+    type: "phone",
+    text: "+251 942257777",
+    icon: "phone",
+  },
+  {
+    type: "phone",
+    text: "+251 912180980",
+    icon: "phone",
+  },
+  {
+    type: "address",
+    text: "Kirkos Sub City, Woreda 03, H. No. 237/ለ-15, Addis Ababa, Ethiopia",
+    icon: "location",
+  },
+  {
+    type: "email",
+    text: "info@arivapropertymanagement.com",
+    icon: "email",
+  },
+];
 ---
+
+<footer class:list={["footer", className]}>
+  <!-- Contact Section -->
+  <div class="footer__contact-section container">
+    <div class="footer__contact-banner">
+      <h2
+        class="footer__contact-title type-display-1"
+        data-text-anim="headerAnimation"
+      >
+        Let's <span class="footer__contact-highlight">Chat Now</span>!
+      </h2>
+      <p class="footer__contact-subtitle" data-text-anim="bodyAnimation">
+        Looking for a <span class="footer__contact-bold"
+          >reliable property management solution</span
+        > in Addis Ababa?
+        <span class="footer__contact-underline">Send us a message!</span>
+      </p>
+    </div>
+    <div class="line-break"></div>
+
+    <div class="footer__contact-content">
+      <!-- Contact Form -->
+      <form class="footer__form">
+        <div class="footer__form-fields">
+          <div class="footer__form-field" data-fade-in>
+            <input
+              type="text"
+              name="fullName"
+              placeholder="Full Name*"
+              class="footer__form-input type-body-sm-1"
+              required
+            />
+          </div>
+          <div class="footer__form-field" data-fade-in>
+            <input
+              type="email"
+              name="emailAddress"
+              placeholder="Email Address*"
+              class="footer__form-input type-body-sm-1"
+              required
+            />
+          </div>
+          <div class="footer__form-field" data-fade-in>
+            <input
+              type="text"
+              name="companyName"
+              placeholder="Company Name"
+              class="footer__form-input type-body-sm-1"
+            />
+          </div>
+          <div
+            class="footer__form-field footer__form-field--large"
+            data-fade-in
+          >
+            <textarea
+              name="message"
+              placeholder="Message*"
+              class="footer__form-textarea type-body-sm-1"
+              required></textarea>
+          </div>
+        </div>
+
+        <Button
+          text="Send Message"
+          variant="primary"
+          size="large"
+          icon="arrow"
+          type="submit"
+          data-fade-in
+        />
+      </form>
+
+      <div class="footer__map" data-fade-in>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31525.388303216878!2d38.7589477!3d9.00215685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b85b5c3978a67%3A0xc067aedfe8ff4ed4!2sKirkos%2C%20Addis%20Ababa!5e0!3m2!1sen!2set!4v1760281153623!5m2!1sen!2set"
+          width="600"
+          height="450"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Content -->
+  <div class="footer__content">
+    <div class="footer__content-wrapper">
+      <!-- About Ariva -->
+      <div class="footer__section footer__section--about" data-fade-in>
+        <Image src={logo} alt="Ariva Logo" class="footer__logo" />
+
+        <p class="footer__description">
+          Ariva PM is a top PM company based in Addis Ababa, Ethiopia.
+        </p>
+        <div class="footer__social">
+          <a href="#" class="footer__social-link" aria-label="Facebook">
+            <Icon name="facebook" width={30} height={30} />
+          </a>
+          <a href="#" class="footer__social-link" aria-label="Instagram">
+            <Icon name="instagram" width={30} height={30} />
+          </a>
+          <a href="#" class="footer__social-link" aria-label="LinkedIn">
+            <Icon name="linkedin" width={30} height={30} />
+          </a>
+          <a href="#" class="footer__social-link" aria-label="WhatsApp">
+            <Icon name="whatsapp" width={30} height={30} />
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer__section footer__section--links">
+        <h3 class="footer__section-title" data-text-anim="headerAnimation">
+          QUICK LINKS
+        </h3>
+        <ul class="footer__links-list">
+          {
+            quickLinks.map((link) => (
+              <li class="footer__links-item" data-fade-in>
+                <a
+                  href={link.href}
+                  class="footer__link"
+                  data-text-anim="linkAnimation"
+                  aria-label={link.text}
+                >
+                  {link.text}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Open Hours -->
+      <div class="footer__section footer__section--hours">
+        <h3 class="footer__section-title" data-text-anim="headerAnimation">
+          OPEN HOURS
+        </h3>
+        <ul class="footer__hours-list">
+          {
+            openHours.map((hour) => (
+              <li class="footer__hours-item" data-fade-in>
+                {hour}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Contacts -->
+      <div class="footer__section footer__section--contacts">
+        <h3 class="footer__section-title" data-text-anim="headerAnimation">
+          CONTACTS
+        </h3>
+        <div class="footer__contacts-list">
+          {
+            contactInfo.map((contact) => (
+              <div class="footer__contact-item" data-fade-in>
+                <div class="footer__contact-icon">
+                  <Icon name={contact.icon} width={27} height={27} />
+                </div>
+                {contact.type === "phone" ? (
+                  <a
+                    href={`tel:${contact.text.replace(/\s/g, "")}`}
+                    class="footer__contact-text"
+                  >
+                    {contact.text}
+                  </a>
+                ) : contact.type === "email" ? (
+                  <a
+                    href={`mailto:${contact.text}`}
+                    class="footer__contact-text"
+                  >
+                    {contact.text}
+                  </a>
+                ) : (
+                  <span class="footer__contact-text">{contact.text}</span>
+                )}
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="footer__copyright" data-fade-in>
+      Copyright © Ariva Property Management PLC <span id="current-year"
+      ></span>. All Rights Reserved.
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const currentYearSpan = document.getElementById("current-year");
+    if (currentYearSpan) {
+      currentYearSpan.textContent = new Date().getFullYear().toString();
+    }
+  });
+</script>
