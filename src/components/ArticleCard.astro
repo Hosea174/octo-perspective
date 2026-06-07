@@ -1,0 +1,52 @@
+---
+import "../styles/components/_articleCard.scss";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+
+interface Props {
+  title: string;
+  category: string;
+  readTime: string;
+  image: string;
+  imageAlt?: string;
+  href: string;
+  class?: string;
+}
+
+const {
+  title,
+  category,
+  readTime,
+  image,
+  imageAlt = title,
+  href,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<article class:list={["article-card", className]} {...rest} data-category={category}>
+  <a href={href} class="article-card__link">
+    <div class="article-card__image img-wrapper">
+      <Image src={image} alt={imageAlt} class="article-card__img cover" loading="lazy" inferSize/>
+    </div>
+
+    <div class="article-card__content">
+      <div class="article-card__meta">
+        <span class="article-card__category type-body-sm-2">{category}</span>
+        <span class="article-card__read-time type-body-sm-2">{readTime}</span>
+      </div>
+
+      <h3 class="article-card__title type-header-4">{title}</h3>
+
+      <div class="article-card__cta">
+        <span class="article-card__cta-text type-body-sm-1 u-fw-700"
+          >Read Now</span
+        >
+        <span class="article-card__cta-icon">
+          <Icon name="arrow" width={12} height={14} />
+        </span>
+      </div>
+    </div>
+  </a>
+</article>

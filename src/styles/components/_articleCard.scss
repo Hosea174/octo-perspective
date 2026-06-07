@@ -1,0 +1,125 @@
+@use '../variables' as *;
+
+.article-card {
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  will-change: transform, opacity;
+
+  &__link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.2s ease-in;
+
+  }
+
+  &__image.img-wrapper {
+    height: auto;
+    // width: 440px;
+    width: 100%;
+    aspect-ratio: 1.6;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+
+  &__img {
+    transition: transform 1.2s cubic-bezier(.2, .9, .2, 1);
+
+    .article-card__link:hover & {
+      transform: scale(1.03);
+    }
+  }
+
+  // &__content {}
+
+  &__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  &__category {
+    padding: 4px 8px;
+    border-radius: 7px;
+    background: #F7F0E6;
+    color: rgba(39, 34, 27, 0.8);
+  }
+
+  &__read-time {
+    color: rgba(81, 39, 39, 0.85);
+    font-weight: $fw-medium;
+  }
+
+  &__title {
+    color: rgba(39, 34, 27, 0.8);
+    margin-bottom: 16px;
+
+    .article-card__link:hover & {
+      color: rgba(39, 34, 27, 1);
+    }
+  }
+
+  &__cta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    &-text {
+      color: #512727;
+    }
+
+    &-icon {
+      display: flex;
+
+      [data-icon="arrow"] {
+        color: $clr-neutral-700;
+        transition: transform 0.2s ease-in;
+      }
+
+    }
+
+    .article-card__link:hover & {
+      &-icon [data-icon="arrow"] {
+        transform: translateX(2px);
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+// @media (max-width: 768px) {
+//   .article-card {
+//     width: 100%;
+//     max-width: 400px;
+//     height: auto;
+
+//     &__image {
+//       height: 240px;
+//     }
+
+//     &__title {
+//       font-size: 22px;
+//     }
+//   }
+// }
+
+// @media (max-width: 480px) {
+//   .article-card {
+//     &__image {
+//       height: 200px;
+//     }
+
+//     &__title {
+//       font-size: 20px;
+//     }
+
+//     &__meta {
+//       align-items: flex-start;
+//       gap: 8px;
+//     }
+//   }
+// }
