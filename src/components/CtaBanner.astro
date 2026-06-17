@@ -1,0 +1,75 @@
+---
+import "../styles/components/_ctaBanner.scss";
+import Button from "./Button.astro";
+import { Image } from "astro:assets";
+import ctaBackgroundImage from "../assets/cta-img.png";
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  primaryButtonText?: string;
+  primaryButtonHref?: string;
+  secondaryButtonText?: string;
+  secondaryButtonHref?: string;
+  backgroundImage?: ImageMetadata;
+  class?: string;
+}
+
+const {
+  title = "Ready to Simplify Your Property Care?",
+  subtitle = "Get reliable property management and maintenance services.",
+  primaryButtonText = "Get In Touch",
+  primaryButtonHref = "#contact",
+  secondaryButtonText = "Our Services",
+  secondaryButtonHref = "/#services",
+  backgroundImage = ctaBackgroundImage,
+  class: className,
+} = Astro.props;
+---
+
+<section class:list={["cta-banner", className]}>
+  <div class="container wrapper">
+    <div class="cta-banner__container u-mx-auto">
+      <div class="cta-banner__content">
+        <h2
+          class="cta-banner__title type-header-2"
+          data-text-anim="headerAnimation"
+        >
+          {title}
+        </h2>
+        <p
+          class="cta-banner__subtitle type-body"
+          data-text-anim="bodyAnimation"
+        >
+          {subtitle}
+        </p>
+        <div class="cta-banner__actions">
+          <Button
+            text={primaryButtonText}
+            variant="primary"
+            size="large"
+            icon="arrow"
+            href={primaryButtonHref}
+            data-fade-in
+          />
+          <Button
+            text={secondaryButtonText}
+            variant="secondary-light"
+            size="large"
+            icon="arrow"
+            href={secondaryButtonHref}
+            class="btn--dark"
+            data-fade-in
+          />
+        </div>
+      </div>
+      <div class="cta-banner__image img-wrapper">
+        <Image
+          src={backgroundImage}
+          alt="Property management background"
+          class="cta-banner__bg-image contain"
+        />
+      </div>
+    </div>
+  </div>
+</section>

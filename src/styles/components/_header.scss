@@ -1,3 +1,5 @@
+@use '../variables' as *;
+
 .header {
   width: 100%;
   padding: 4px 8px;
@@ -204,4 +206,8 @@
       gap: 4px;
     }
   }
+}
+
+body.no-scroll {
+  overflow: hidden;
 }

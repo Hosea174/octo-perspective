@@ -1,0 +1,71 @@
+@use '../variables' as *;
+
+.cta-banner {
+  .wrapper {
+    margin-block: $size-900;
+  }
+
+  &__container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 956px;
+    height: 333px;
+    background: linear-gradient(276deg, #92710E 0.9%, #383020 98.82%);
+    border-radius: 12px;
+    display: flex;
+  }
+
+  &__content {
+    padding: 30px;
+    justify-content: space-between;
+    z-index: 2;
+  }
+
+  &__title {
+    max-width: 530px;
+    color: #FFFBF6;
+  }
+
+  &__subtitle {
+    max-width: 266px;
+    color: rgba(255, 255, 255, 0.90);
+    margin-block: 12px 22px;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: auto;
+    width: fit-content;
+  }
+
+  &__image.img-wrapper {
+    width: min(300px, 40vw);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: fit-content;
+  }
+
+  @media (max-width: 843px) {
+    &__title {
+      max-width: 390px;
+    }
+
+    &__subtitle {
+      margin-block: 10px 20px;
+    }
+  }
+
+  @media (max-width: 519px) {
+    &__content {
+      padding: 28px 24px;
+    }
+
+    &__subtitle {
+      margin-block: 7px 15px;
+    }
+  }
+}
