@@ -1,0 +1,50 @@
+# {{SITE_NAME}}
+
+> {{SITE_TAGLINE}}
+
+{{SITE_SHORT_DESCRIPTION}}
+
+## Main Pages
+
+- Home: {{SITE_URL}}/
+- About: {{SITE_URL}}/about
+- Services: {{SITE_URL}}/services
+- Contact: {{SITE_URL}}/contact
+
+## Company Information
+
+- Company Name: {{SITE_NAME}}
+- Website: {{SITE_URL}}
+- Industry: {{INDUSTRY}}
+- Location: {{LOCATION}}
+
+## Services
+
+- {{SERVICE_1}}
+- {{SERVICE_2}}
+- {{SERVICE_3}}
+- {{SERVICE_4}}
+
+## Target Audience
+
+{{TARGET_AUDIENCE}}
+
+## Key Information
+
+{{KEY_INFORMATION}}
+
+## Contact
+
+- Email: {{CONTACT_EMAIL}}
+- Phone: {{CONTACT_PHONE}}
+- Address: {{CONTACT_ADDRESS}}
+
+## Social Links
+
+- LinkedIn: {{LINKEDIN_URL}}
+- Facebook: {{FACEBOOK_URL}}
+- Instagram: {{INSTAGRAM_URL}}
+
+## Last Updated
+
+{{LAST_UPDATED}}
