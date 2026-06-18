@@ -38,6 +38,7 @@ Your task is to analyze the provided design frame to:
     *   Define TypeScript interfaces for props to handle content and variant selection.
     *   Import necessary assets (images, icons, etc.) as required.
 2.  **SCSS Strategy:**
+    *   **Global Abstracts:** Astro config automatically injects `_abstracts.scss` into every SCSS file. `_abstracts.scss` forwards `_variables.scss` and `utils/functions.scss`, so variables and functions are already available globally in component SCSS files. Do **not** add manual `@use` imports for variables, abstracts, or functions at the top of component SCSS files.
     *   **Consolidation:** Do **not** create separate files for variants. Instead use descriptive class names and SCSS nesting for variants (e.g., `.btn`, `.btn--primary`, `.btn--large`) within the primary component style file.
     *   Follow the rules and instructions from `common.mdc` to implement the component.
 ---

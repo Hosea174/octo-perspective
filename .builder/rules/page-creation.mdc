@@ -44,7 +44,7 @@ You are converting a Figma design into a production-ready static site using **As
 ### SCSS Conventions
 
 - Each page must have its own SCSS file (create if missing).
-- In the astro config, we are automatically importing the `_abstracts.scss` (which `@forward`s `_variables.scss` and `utils/functions.scss`) into all page and component style files, so there's no need to manually import them in order to use variables and functions.
+- In the Astro config, `_abstracts.scss` is automatically injected into every SCSS file. `_abstracts.scss` forwards `_variables.scss` and `utils/functions.scss`, so variables and functions are already available globally in page and component SCSS files. Do **not** add manual `@use` imports for variables, abstracts, or functions at the top of SCSS files.
 - Import the page's SCSS file in the Astro frontmatter.
 - SCSS structure example for the most part (adjust if needed):
   ```scss
