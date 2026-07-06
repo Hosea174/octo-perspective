@@ -22,6 +22,8 @@ const { title, description } = Astro.props;
   </head>
   <body>
     <slot />
-    <script src="../scripts/main.js"></script>
+    <script>
+      import "../scripts/main";
+    </script>
   </body>
 </html>

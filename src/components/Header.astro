@@ -4,7 +4,7 @@ import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 import Button from "./Button.astro";
 
-import logo from "../assets/ariva-logo.svg";
+import logo from "../assets/logo.svg";
 
 interface Props {
   class?: string;
@@ -22,7 +22,7 @@ const navItems = [
 ---
 
 <header class:list={["header", className]}>
-  <div class="header__container container" data-fade-in>
+  <div class="header__container container" data-fade-in="st">
     <div class="header__wrapper">
       <a href="/" class="header__logo">
         <Image src={logo} alt="Ariva Logo" class="header__logo-img" />
@@ -72,8 +72,7 @@ const navItems = [
 </header>
 
 <script>
-  import { initHeader } from "../scripts/components/header.js";
+  import { initHeader } from "../scripts/components/header";
 
-  // Initialize header functionality when DOM is ready
   document.addEventListener("DOMContentLoaded", initHeader);
 </script>

@@ -94,7 +94,21 @@ body.no-scroll {
 }
 
 .duplicate-char {
+  display: inline-block;
   position: absolute;
   inset: 0;
   transform: translateY(100%);
+}
+
+.mask-lines,
+.mask-words,
+.mask-chars {
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+}
+
+.og-char {
+  display: inline-block;
+  position: relative;
 }

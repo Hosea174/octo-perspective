@@ -1,16 +1,33 @@
 ---
+import type { HTMLAttributes, ImageMetadata } from "astro/types";
 import { getImage } from "astro:assets";
+
+type PictureSource = ImageMetadata | string;
+type ImageFormat = "avif" | "png" | "jpg" | "jpeg" | "webp";
 
 interface SourceEntry {
   media: string;
-  src: ImageMetadata;
-  width: number;
+  src: PictureSource;
+  width?: number;
+  height?: number;
+  widths?: number[];
+  sizes?: string;
+  format?: ImageFormat;
+  quality?: number;
 }
 
 interface Props {
   sources: SourceEntry[];
   alt: string;
   class?: string;
+  pictureClass?: string;
+  pictureAttributes?: HTMLAttributes<"picture">;
+  format?: ImageFormat;
+  quality?: number;
+  widths?: number[];
+  sizes?: string;
+  loading?: "eager" | "lazy";
+  decoding?: "async" | "auto" | "sync";
   fetchpriority?: "auto" | "low" | "high";
 }
 
@@ -18,51 +35,120 @@ const {
   sources,
   alt,
   class: className,
+  pictureClass = "responsive-img",
+  pictureAttributes = {},
+  format = "webp",
+  quality,
+  widths,
+  sizes,
+  loading = "lazy",
+  decoding = "async",
   fetchpriority = "auto",
   ...rest
 } = Astro.props;
 
-const processedSources = await Promise.all(
-  sources.map(async (entry) => {
-    const processed = await getImage({
-      src: entry.src,
-      format: "webp",
-    });
+if (sources.length === 0) {
+  throw new Error("ResponsivePicture requires at least one source.");
+}
+
+const buildSrcset = async (entry: SourceEntry) => {
+  const entryWidths = entry.widths ?? widths;
+  const entryFormat = entry.format ?? format;
+  const entryQuality = entry.quality ?? quality;
+
+  if (typeof entry.src === "string") {
     return {
       media: entry.media,
-      src: processed.src,
-      width: processed.attributes.width,
-      height: processed.attributes.height,
+      src: entry.src,
+      srcset: entry.src,
+      sizes: entry.sizes ?? sizes,
+      width: entry.width ?? 1,
+      height: entry.height ?? 1,
     };
-  })
+  }
+
+  if (entryWidths?.length) {
+    const variants = await Promise.all(
+      entryWidths.map(async (targetWidth) => {
+        const image = await getImage({
+          src: entry.src,
+          format: entryFormat,
+          quality: entryQuality,
+          width: targetWidth,
+        });
+
+        return {
+          src: image.src,
+          descriptor: `${image.attributes.width}w`,
+          width: image.attributes.width,
+          height: image.attributes.height,
+        };
+      })
+    );
+
+    const fallbackVariant = variants[variants.length - 1];
+
+    return {
+      media: entry.media,
+      src: fallbackVariant.src,
+      srcset: variants
+        .map((variant) => `${variant.src} ${variant.descriptor}`)
+        .join(", "),
+      sizes: entry.sizes ?? sizes,
+      width: fallbackVariant.width,
+      height: fallbackVariant.height,
+    };
+  }
+
+  const image = await getImage({
+    src: entry.src,
+    format: entryFormat,
+    quality: entryQuality,
+    width: entry.width,
+    height: entry.height,
+  });
+
+  return {
+    media: entry.media,
+    src: image.src,
+    srcset: image.src,
+    sizes: entry.sizes ?? sizes,
+    width: image.attributes.width,
+    height: image.attributes.height,
+  };
+};
+
+const processedSources = await Promise.all(
+  sources.map((entry) => buildSrcset(entry))
 );
 
-const lastSourceEntry = sources[sources.length - 1];
-const processedFallback = await getImage({
-  src: lastSourceEntry.src,
-  format: "webp",
-  widths: [400, 800, 1200],
-});
-
-const lastSource = processedSources[processedSources.length - 1] || {
-  width: processedFallback.attributes.width,
-  height: processedFallback.attributes.height,
-};
+const fallbackSource = processedSources[processedSources.length - 1];
 ---
 
-<picture class="responsive-img">
+<picture class={pictureClass} {...pictureAttributes}>
   {
     processedSources
       .slice(0, -1)
-      .map((source) => <source media={source.media} srcset={source.src} />)
+      .map((source) => (
+        <source
+          media={source.media}
+          srcset={source.srcset}
+          sizes={source.sizes}
+        />
+      ))
   }
 
   <img
     class:list={[className]}
-    src={processedFallback.src}
+    src={fallbackSource.src}
+    srcset={fallbackSource.srcset}
+    sizes={fallbackSource.sizes}
     alt={alt}
-    width={lastSource.width}
-    height={lastSource.height}
+    width={fallbackSource.width}
+    height={fallbackSource.height}
+    loading={loading}
+    decoding={decoding}
     fetchpriority={fetchpriority}
+    {...rest}
   />
 </picture>

@@ -23,7 +23,7 @@ Your task is to analyze the provided design frame to:
 ## Execution Workflow
 
 ### Phase 1: File System Management
-1.  **Identify Components:** Determine component names based on labels in the Figma frame.
+1.  **Identify Components:** Locate component labels in the Figma "Components" frame. Within each "Component Preview Slot", extract the component's name from layers named `Component / ComponentName` and use `ComponentName` as the official name for file creation, noting any associated states or variants.
 2.  **File Generation:** For every identified component, ensure the following files are created (or already exist):
     *   `src/components/[ComponentName].astro`
     *   `src/styles/components/[component-name].scss`
