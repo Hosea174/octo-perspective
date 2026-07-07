@@ -1,6 +1,5 @@
 ---
 import "../styles/components/_footer.scss";
-import { Image } from "astro:assets";
 
 interface Props {
   class?: string;
@@ -9,14 +8,19 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<footer class:list={["footer", className]}></footer>
+<footer class:list={["site-footer", className]}>
+  <div class="site-footer__inner container">
+    <p>© <span id="current-year"></span> Starter</p>
+  </div>
+</footer>
 
 <script>
-  // copyright year helper, simply add #current-year id to the span element where the year should go
-  document.addEventListener("DOMContentLoaded", () => {
+  function setCurrentYear() {
     const currentYearSpan = document.getElementById("current-year");
     if (currentYearSpan) {
       currentYearSpan.textContent = new Date().getFullYear().toString();
     }
-  });
+  }
+
+  document.addEventListener("DOMContentLoaded", setCurrentYear);
 </script>

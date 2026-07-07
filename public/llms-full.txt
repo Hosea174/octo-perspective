@@ -1,102 +1,30 @@
 # {{SITE_NAME}}
 
-> {{SITE_TAGLINE}}
-
 Website: {{SITE_URL}}
 
 ---
 
-# Executive Summary
+# Summary
 
-{{EXECUTIVE_SUMMARY}}
-
----
-
-# About The Company
-
-{{ABOUT_COMPANY}}
+{{PROJECT_SUMMARY}}
 
 ---
 
-# Products and Services
-
-{{PRODUCTS_AND_SERVICES}}
-
----
-
-# Service Details
-
-{{SERVICE_DETAILS}}
-
----
-
-# Industries Served
-
-{{INDUSTRIES_SERVED}}
-
----
-
-# Customer Benefits
-
-{{CUSTOMER_BENEFITS}}
-
----
-
-# Process
-
-{{BUSINESS_PROCESS}}
-
----
-
-# Frequently Asked Questions
-
-{{FAQ_CONTENT}}
-
----
-
-# Team
-
-{{TEAM_INFORMATION}}
-
----
-
-# Locations
-
-{{LOCATION_INFORMATION}}
-
----
-
-# Contact Information
-
-Email: {{CONTACT_EMAIL}}
-
-Phone: {{CONTACT_PHONE}}
-
-Address: {{CONTACT_ADDRESS}}
-
----
-
-# Website Structure
+# Pages
 
 {{SITE_STRUCTURE}}
 
 ---
 
-# Important Pages
+# Key Information
 
-{{IMPORTANT_PAGES}}
-
----
-
-# Policies
-
-{{POLICY_SUMMARIES}}
+{{KEY_INFORMATION}}
 
 ---
 
-# Search Keywords
+# Contact
 
-{{SEARCH_KEYWORDS}}
+{{CONTACT_INFORMATION}}
 
 ---
 

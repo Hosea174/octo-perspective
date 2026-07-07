@@ -5,7 +5,7 @@ import { Icon } from "astro-icon/components";
 interface Props {
   text: string;
   href?: string;
-  variant?: "primary" | "secondary-light" | "secondary-dark" | "tertiary";
+  variant?: "primary" | "secondary" | "ghost";
   size?: "large" | "small";
   class?: string;
   icon?: string;
@@ -25,35 +25,23 @@ const {
   ...rest
 } = Astro.props;
 
-const classes = ["btn", `btn--${variant}`, `btn--${size}`, className].filter(
-  Boolean
-);
+const classes = ["btn", `btn--${variant}`, `btn--${size}`, className].filter(Boolean);
+const Element = href ? "a" : "button";
 ---
 
-{
-  href ? (
-    <a href={href} class="btn-link" {...rest}>
-      <button class:list={classes} type={type} disabled={disabled}>
-        <span class="btn__text" data-text-anim="linkAnimation">
-          {text}
-        </span>
-        {icon && (
-          <span class="btn__icon">
-            <Icon name={icon} width={12} height={14} />
-          </span>
-        )}
-      </button>
-    </a>
-  ) : (
-    <button class:list={classes} type={type} disabled={disabled} {...rest}>
-      <span class="btn__text" data-text-anim="linkAnimation">
-        {text}
+<Element
+  href={href}
+  type={href ? undefined : type}
+  disabled={href ? undefined : disabled}
+  class:list={classes}
+  {...rest}
+>
+  <span class="btn__text" data-text-anim="linkAnimation">{text}</span>
+  {
+    icon && (
+      <span class="btn__icon" aria-hidden="true">
+        <Icon name={icon} width={14} height={14} />
       </span>
-      {icon && (
-        <span class="btn__icon">
-          <Icon name={icon} width={12} height={14} />
-        </span>
-      )}
-    </button>
-  )
-}
+    )
+  }
+</Element>

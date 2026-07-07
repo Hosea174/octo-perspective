@@ -1,10 +1,6 @@
 ---
 import "../styles/components/_header.scss";
-import { Icon } from "astro-icon/components";
-import { Image } from "astro:assets";
 import Button from "./Button.astro";
-
-import logo from "../assets/logo.svg";
 
 interface Props {
   class?: string;
@@ -15,59 +11,30 @@ const { class: className } = Astro.props;
 const navItems = [
   { text: "Home", href: "/" },
   { text: "About", href: "/about" },
-  { text: "Services", href: "/#services" },
-  { text: "Projects", href: "/gallery" },
-  { text: "Articles", href: "/articles" },
 ];
 ---
 
-<header class:list={["header", className]}>
-  <div class="header__container container" data-fade-in="st">
-    <div class="header__wrapper">
-      <a href="/" class="header__logo">
-        <Image src={logo} alt="Ariva Logo" class="header__logo-img" />
-      </a>
+<header class:list={["site-header", className]}>
+  <div class="site-header__inner container">
+    <a href="/" class="site-header__brand" aria-label="Home">
+      Starter
+    </a>
 
-      <nav class="header__nav">
-        <ul class="header__nav-list">
-          {
-            navItems.map((item) => (
-              <li class="header__nav-item">
-                <a
-                  href={item.href}
-                  class="header__nav-link"
-                  data-text-anim="linkAnimation"
-                  aria-label={item.text}
-                >
-                  {item.text}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
+    <button class="site-header__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+    </button>
 
-      <div class="header__actions">
-        <Button
-          text="Get In Touch"
-          variant="primary"
-          size="small"
-          icon="arrow"
-          href="#contact"
-        />
-        <Button
-          text="Our Projects"
-          variant="tertiary"
-          size="small"
-          icon="arrow"
-          href="/gallery"
-          class="btn-hide-mobile"
-        />
-        <button class="header__nav-toggler" aria-label="Hamburger menu">
-          <span></span>
-        </button>
-      </div>
-    </div>
+    <nav class="site-header__nav" aria-label="Primary navigation">
+      {
+        navItems.map((item) => (
+          <a class="site-header__link" href={item.href} data-text-anim="linkAnimation">
+            {item.text}
+          </a>
+        ))
+      }
+      <Button text="Contact" href="#contact" size="small" variant="ghost" />
+    </nav>
   </div>
 </header>
 

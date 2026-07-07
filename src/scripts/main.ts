@@ -25,9 +25,11 @@ let animationContext: gsap.Context | undefined;
 const lenis: Lenis | null = prefersReducedMotion()
   ? null
   : new Lenis({
+      lerp: 0.08,
       smoothWheel: true,
       syncTouch: true,
-      touchMultiplier: 2,
+      touchMultiplier: 1,
+      anchors: true,
     });
 
 if (lenis) {
@@ -57,14 +59,5 @@ function initAnimationLayer(): void {
 }
 
 whenPageReady(initAnimationLayer);
-
-document.addEventListener("astro:page-load", () => {
-  whenPageReady(initAnimationLayer);
-});
-
-document.addEventListener("astro:before-swap", () => {
-  animationContext?.revert();
-  animationContext = undefined;
-});
 
 export { gsap, lenis, ScrollTrigger };

@@ -1,30 +1,30 @@
 ---
-// components
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
 import Button from "../components/Button.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
 import Layout from "../layouts/Layout.astro";
-import { Icon } from "astro-icon/components";
-import { Image } from "astro:assets";
 
-// styles
 import "../styles/pages/index.scss";
-
-// assets
 ---
 
-<Layout title="" description="">
+<Layout title="Astro Starter" description="A lightweight Astro starter template.">
   <Header />
 
-  <main>
-    <!-- Code goes here -->
+  <main class="home-page">
+    <section class="home-hero container">
+      <p class="home-hero__eyebrow" data-fade-in="st">Astro Starter</p>
+      <h1 class="home-hero__title" data-text-anim="headerAnimation">
+        Start clean, then design the project.
+      </h1>
+      <p class="home-hero__copy" data-fade-in="st:fade-subtle">
+        Replace this page with the real project content. The starter keeps only the reusable shell, motion hooks, and component examples.
+      </p>
+      <div class="home-hero__actions" data-fade-in="st">
+        <Button text="Primary action" href="/about" />
+        <Button text="Ghost action" href="#example" variant="ghost" />
+      </div>
+    </section>
   </main>
 
   <Footer />
 </Layout>
-
-<script>
-  import { initIndex } from "../scripts/pages/index";
-
-  initIndex();
-</script>

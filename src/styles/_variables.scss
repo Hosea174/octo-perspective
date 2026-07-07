@@ -1,61 +1,9 @@
-// colors
-$clr-primary-100: #FFF0C9;
-$clr-primary-350: #F7DB94;
-$clr-primary-400: #DEBB62;
-$clr-primary-500: #D0A21A;
-$clr-primary-900: #56360A;
+// Project tokens live here.
+// Keep this file intentionally empty in the starter so every new project can
+// define its own brand system without inheriting real colors or type scales.
 
-$clr-secondary-400: #7E0808;
-$clr-secondary-600: #620909;
-
-$clr-neutral-50: #FFFFFF;
-$clr-neutral-100: #FFFBF6;
-$clr-neutral-200: #F8F4EE;
-$clr-neutral-500: #51272794;
-$clr-neutral-600: #27221BCC;
-$clr-neutral-650: #512727ED;
-$clr-neutral-700: #512727;
-
-// font families
-$ff-header: "Host Grotesk", sans-serif;
-$ff-body: "Helvetica Now Display", sans-serif;
-$ff-accent: "Helvetica Now Display", sans-serif;
-
-// font weights
-$fw-regular: 400;
-$fw-medium: 500;
-$fw-semi-bold: 600;
-$fw-bold: 700;
-
-// font sizes
-$fs-display-1: clamp(4.375rem, 3.67vw + 3.549rem, 6.875rem);
-$fs-display-2: clamp(3.375rem, 5.091vw + 2.261rem, 6.875rem);
-$fs-header-1: clamp(2.25rem, 4.037vw + 1.342rem, 5rem);
-$fs-header-2: clamp(1.75rem, 2.385vw + 1.213rem, 3.375rem);
-$fs-header-3: clamp(1.5rem, 0.734vw + 1.335rem, 2rem);
-$fs-header-4: clamp(1.375rem, 0.367vw + 1.292rem, 1.625rem);
-$fs-header-5: clamp(1rem, 0.364vw + 0.92rem, 1.25rem);
-$fs-body: clamp(0.875rem, 0.367vw + 0.792rem, 1.125rem);
-$fs-body-sm-1: clamp(0.875rem, 0.183vw + 0.834rem, 1rem);
-$fs-body-sm-2: clamp(0.75rem, 0.49vw + 0.64rem, 0.875rem);
-
-// line heights
-$lh-display-1: clamp(3.938rem, 6.33vw + 2.513rem, 8.25rem);
-$lh-display-2: 1.05;
-$lh-header-1: 0.99;
-$lh-header-2: 1.16;
-$lh-header-3: clamp(1.71rem, 1.013vw + 1.482rem, 2.4rem);
-$lh-header-4: clamp(1.416rem, 0.783vw + 1.24rem, 1.95rem);
-$lh-header-5: clamp(1.1rem, 0.582vw + 0.973rem, 1.5rem);
-$lh-body: 1.48;
-$lh-body-sm-1: 1.42;
-$lh-body-sm-2: 1.38;
-
-// letter spacings
-$ls-heading: -0.03em;
-$ls-body: -0.01em;
-
-// sizes
-$size-900: clamp(3.313rem, 2.477vw + 2.755rem, 5rem);
-$size-800: clamp(2.625rem, 2.018vw + 2.171rem, 4rem);
-$size-700: clamp(2rem, 1.468vw + 1.67rem, 3rem);
+// Example:
+// $color-text: #111111;
+// $color-surface: #ffffff;
+// $font-body: system-ui, sans-serif;
+// $space-section: responsiveclamp(72px, 144px);

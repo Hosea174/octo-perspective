@@ -1,2 +1,41 @@
-@use '../variables' as *;
-@use "../utils/functions" as *;
+.home-page {
+  min-height: 70vh;
+}
+
+.home-hero {
+  display: grid;
+  align-content: center;
+  min-height: 70vh;
+  padding-block: responsiveclamp(72px, 140px);
+
+  &__eyebrow {
+    margin-bottom: 1rem;
+    color: #666666;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__title {
+    max-width: 11ch;
+    margin: 0;
+    font-size: responsiveclamp(48px, 92px);
+    line-height: 0.95;
+    letter-spacing: 0;
+  }
+
+  &__copy {
+    max-width: 42rem;
+    margin: 1.25rem 0 0;
+    color: #444444;
+    font-size: responsiveclamp(17px, 20px);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+}

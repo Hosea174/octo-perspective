@@ -1,8 +1,14 @@
 @use "sass:math";
 
 @function to-rem($value, $root) {
-  @if math.unit($value)=="px" {
-    @return math.div($value, $root) * 1rem;
+  @if math.unit($value) == "px" {
+    $root-unitless: $root;
+
+    @if math.unit($root) == "px" {
+      $root-unitless: math.div($root, 1px);
+    }
+
+    @return math.div(math.div($value, 1px), $root-unitless) * 1rem;
   }
 
   @return $value;
@@ -22,5 +28,9 @@
   $y-intercept: $min-rem - ($min-w-rem * $slope);
   $slope-vw: $slope * 100;
 
-  @return clamp(#{$min-rem}, #{$y-intercept} + #{math.div($slope-vw, 1rem)}vw, #{$max-rem});
+  @return clamp(#{$min-rem}, #{$y-intercept} + #{$slope-vw}vw, #{$max-rem});
+}
+
+@function responsiveclamp($min-value, $max-value, $min-width: 375px, $max-width: 1440px, $pixels-per-rem: 16) {
+  @return fluid($min-value, $max-value, $min-width, $max-width, $pixels-per-rem);
 }

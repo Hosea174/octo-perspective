@@ -1,21 +1,21 @@
-@use 'reset';
-@use 'typography';
+@use "reset";
+@use "typography";
+
+html {
+  scrollbar-gutter: stable;
+}
 
 body {
-  background-color: $clr-neutral-100;
+  background: #ffffff;
 }
 
-// Common classes
+#page-wrapper {
+  min-height: 100vh;
+}
+
 .container {
-  max-width: 1450px;
-  padding-inline: 2rem;
-  margin: 0 auto;
-}
-
-@media screen and (max-width: 700px) {
-  .container {
-    padding-inline: 0.625rem;
-  }
+  width: min(100% - 2rem, 72rem);
+  margin-inline: auto;
 }
 
 .img-wrapper {
@@ -41,63 +41,9 @@ body.no-scroll {
   overflow: hidden;
 }
 
-// Utility classes
-.u-fw-400 {
-  font-weight: $fw-regular;
-}
-
-.u-fw-500 {
-  font-weight: $fw-medium;
-}
-
-.u-fw-600 {
-  font-weight: $fw-semi-bold;
-}
-
-.u-fw-700 {
-  font-weight: $fw-bold;
-}
-
-.u-italic {
-  font-style: italic;
-}
-
-// Custom scrollbar styles
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-
-::-webkit-scrollbar-track {
-  background: $clr-neutral-200;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: $clr-primary-400;
-  border-radius: 10px;
-  border: 3px solid #e9e8e8;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #D0A21A;
-}
-
-::-webkit-scrollbar-corner {
-  background: #f1f1f1;
-}
-
-// styles for animations
 [data-text-anim],
 [data-fade-in] {
   visibility: hidden;
-}
-
-.duplicate-char {
-  display: inline-block;
-  position: absolute;
-  inset: 0;
-  transform: translateY(100%);
 }
 
 .mask-lines,
@@ -111,4 +57,11 @@ body.no-scroll {
 .og-char {
   display: inline-block;
   position: relative;
+}
+
+.duplicate-char {
+  display: inline-block;
+  position: absolute;
+  inset: 0;
+  transform: translateY(100%);
 }

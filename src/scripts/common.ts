@@ -26,6 +26,14 @@ export const fadePresets = {
     duration: 0.5,
     ease: "power2.out",
   },
+  "fade-subtle": {
+    opacity: 0,
+    yPercent: () => responsiveClamp(10, 20),
+    scale: 0.98,
+    filter: () => `blur(${responsiveClamp(2, 4)}px)`,
+    duration: 0.9,
+    ease: "power3.out",
+  },
 } satisfies Record<string, gsap.TweenVars>;
 
 export type FadePresetName = keyof typeof fadePresets;
@@ -165,6 +173,7 @@ export function initGlobalFadeIns(): void {
 
 export function initGlobalTextAnimations(): void {
   document.querySelectorAll<HTMLElement>("[data-text-anim]").forEach((el) => {
+    if (el.dataset.textAnim?.startsWith("tl:")) return;
     animateText(el);
   });
 }
