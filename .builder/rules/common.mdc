@@ -67,6 +67,12 @@ This Astro template follows a structured organization that separates concerns an
 - **Images:** Always use Astro's `<Image />` component for images where available. Import image assets in the Astro frontmatter:
 - **If an image asset matches a Figma layer name or exists in `src/assets/`, use it.** If no matching local asset exists, use a placeholder **from the project's assets** or a neutral placeholder. Avoid Unsplash/stock images unless absolutely necessary.
 - **Icons:** Use `astro-icon`'s `<Icon name="icon-name" />` component. Icon-to-name mapping is strict: the icon `src/icons/icon-name.svg` → `name="icon-name"`. Do **not** attempt to inline or reimplement icons as SVG blobs unless asked.
+- **Icon Styling:** Whenever using an icon using Astro's `<Icon name="icon-name" />` component, the exported SVG icons must be styled to get their color/fill/stroke strictly using the selector format like this:
+  ```css
+  [data-icon="icon-name"] {
+    /* styles here */
+  }
+  ```
 - **Image wrappers:** Use `.img-wrapper` helper class and `cover`/`contain` helper classes defined in `main.scss`. Apply `border-radius` to the wrapper, not the `<Image>` directly.
 
 
