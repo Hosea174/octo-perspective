@@ -1,4 +1,4 @@
-# build output
+﻿# build output
 dist/
 
 # generated types
@@ -26,6 +26,7 @@ pnpm-debug.log*
 .vscode/
 
 # ai agent files
+# .agents/
 # .builder/
 # .agent/
 # .kilocode
