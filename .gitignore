@@ -1,4 +1,4 @@
-﻿# build output
+# build output
 dist/
 
 # generated types
@@ -28,7 +28,3 @@ bun-error.log*
 
 # ai agent files
 # .agents/
-# .builder/
-# .agent/
-# .kilocode
-
