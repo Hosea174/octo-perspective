@@ -1,4 +1,4 @@
-# **Astro JS + SCSS Page Creation Guidelines**
+﻿# **Astro JS + SCSS Page Creation Guidelines**
 
 You are converting a Figma design into a production-ready static site using **Astro JS + SCSS**, following a provided custom starter template. Adhere strictly to the conventions below.
 
@@ -13,15 +13,15 @@ You are converting a Figma design into a production-ready static site using **As
   1. Review all existing components to reuse them instead of rebuilding.
   2. Study global SCSS files to leverage:
      - Utility & reusable classes (`main.scss`)
-     - Typography classes (`typography.scss`) — use these for all headings/body text.
-     - Design tokens (`variables.scss`) — use for colors, spacing, etc.
+     - Typography classes (`typography.scss`) â€” use these for all headings/body text.
+     - Design tokens (`variables.scss`) â€” use for colors, spacing, etc.
   3. Check `src/assets/` and `src/icons/` for matching Figma layer names. Use real assets when available; otherwise, use placeholders. Avoid using unsplash images at all cost. Check if the assets already exist in the specified folders and use those in either scss or astro files. or just use the direct asset link. Only if you have no options should you use stock images.
 
 > **Do not**:
 >
 > - Add new utility classes, global variables, or components unless explicitly required.
 > - Hardcode colors **unless** a needed color has no corresponding variable.
-> - Create new typography classes — if no class matches the text you are styling, pick the closest one and **override only necessary properties** in the page's own `.scss` file.
+> - Create new typography classes â€” if no class matches the text you are styling, pick the closest one and **override only necessary properties** in the page's own `.scss` file.
 
 ### Page Development Rules
 
@@ -63,3 +63,4 @@ You are converting a Figma design into a production-ready static site using **As
     // Similar structure
   }
   ```
+

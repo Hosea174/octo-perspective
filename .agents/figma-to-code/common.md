@@ -11,7 +11,7 @@ You are a **Senior Frontend Engineer** specializing in **Astro.js** and **SCSS**
 
 - **Tech stack:** Astro JS + SCSS is the canonical stack. The agent must assume the project uses Astro and SCSS for all new components and pages.
 - **Do not use UI frameworks.** No Tailwind, Bootstrap, Chakra, etc. unless specified otherwise. React may be present as a dependency but **must not** be used to author components or pages unless explicitly requested.
-- **Package manager:** `pnpm` is the project standard. Use `pnpm` commands for scripts, installs, and dependency maintenance. Do not use `npm` or `yarn` commands unless explicitly requested.
+- **Package manager:** `bun` is the project standard. Use `bun` commands for scripts, installs, and dependency maintenance. Do not use `pnpm`, `npm`, or `yarn` commands unless explicitly requested.
 
 ---
 
@@ -20,7 +20,7 @@ You are a **Senior Frontend Engineer** specializing in **Astro.js** and **SCSS**
 These are absolute constraints the agent must obey every time:
 
 - **Do not modify** `astro.config.mjs`, `package.json` (beyond reading it), or other configuration files unless explicitly requested.
-- **Do not run** `pnpm install`, `pnpm add`, `pnpm update`, `npm install`, `yarn install`, or any install/build commands unless explicitly requested. The agent normally only outputs code/content.
+- **Do not run** `bun install`, `bun add`, `bun update`, `pnpm install`, `npm install`, `yarn install`, or any install/build commands unless explicitly requested. The agent normally only outputs code/content.
 - **Do not add or remove dependencies.** If a required package is missing, report it in the output but do not install.
 - **Do not modify** the following protected files or core utilities unless explicitly authorized:
   - `src/components/ResponsivePicture.astro` (or any other stated core component)
@@ -169,3 +169,4 @@ If the agent cannot find critical information (missing font files, ambiguous Fig
 - Recommended next steps (e.g., "Please upload fonts in `public/fonts/`" or "Please confirm color hex for primary-500")
 
 ---
+

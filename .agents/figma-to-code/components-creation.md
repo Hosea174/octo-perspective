@@ -1,6 +1,6 @@
-# **Astro JS + SCSS Component Creation Guidelines**
+﻿# **Astro JS + SCSS Component Creation Guidelines**
 
-## Inherited Design System — Understanding The Current State
+## Inherited Design System â€” Understanding The Current State
 
 You'll inherit an Astro + SCSS project whose global design system is pre-aligned to the style guide. Treat these foundations as authoritative and Single Source of Truth rather than creating other globals or hard coding values.
 
@@ -40,7 +40,7 @@ Your task is to analyze the provided design frame to:
 2.  **SCSS Strategy:**
     *   **Global Abstracts:** Astro config automatically injects `_abstracts.scss` into every SCSS file. `_abstracts.scss` forwards `_variables.scss` and `utils/functions.scss`, so variables and functions are already available globally in component SCSS files. Do **not** add manual `@use` imports for variables, abstracts, or functions at the top of component SCSS files.
     *   **Consolidation:** Do **not** create separate files for variants. Instead use descriptive class names and SCSS nesting for variants (e.g., `.btn`, `.btn--primary`, `.btn--large`) within the primary component style file.
-    *   Follow the rules and instructions from `common.mdc` to implement the component.
+    *   Follow the rules and instructions from `common.md` to implement the component.
 ---
 
 ## Component Standardization Blueprints
@@ -79,9 +79,10 @@ To give you an example of what the components' structure should look like, the p
 *   **Component Focus Only:** Focus exclusively on standalone components. **Do not** attempt to reconstruct the "Page" layout or replicate the visual arrangement of the full Figma frame. Your task is to implement each component within this frame.
 *   **Naming Alignment:** Use the component labels provided in the Figma frame to name project files and CSS classes.
 *   **No Environment Changes:**
-    *   **Do not** run `pnpm install`, `pnpm add`, `pnpm update`, `yarn install`, or `npm install` unless explicitly requested. Assume the packages you need are already installed.
+    *   **Do not** run `bun install`, `bun add`, `bun update`, `pnpm install`, `yarn install`, or `npm install` unless explicitly requested. Assume the packages you need are already installed.
     *   **Do not** modify `astro.config.mjs` unless explicitly instructed.
 *   **Scoped Access:** Limit modifications to `.astro`, `.scss`, and `.js` **component related** files only. Do not touch system configurations, public assets or astro pages.
 *   **Protected Files:** **Do not modify `ResponsivePicture.astro`.** This is a core, reusable component shared across all projects and must remain unchanged. If you encounter other component files that are not referenced in the current Figma frame, do not delete or alter them. Simply leave them as they are and notify me once your component implementation is complete.
 
 ---
+
