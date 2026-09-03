@@ -6,7 +6,7 @@
   display: grid;
   align-content: center;
   min-height: 70vh;
-  padding-block: responsiveclamp(72px, 140px);
+  padding-block: fluid(72px, 140px);
 
   &__eyebrow {
     margin-bottom: 1rem;
@@ -20,7 +20,7 @@
   &__title {
     max-width: 11ch;
     margin: 0;
-    font-size: responsiveclamp(48px, 92px);
+    font-size: fluid(48px, 92px);
     line-height: 0.95;
     letter-spacing: 0;
   }
@@ -29,7 +29,7 @@
     max-width: 42rem;
     margin: 1.25rem 0 0;
     color: #444444;
-    font-size: responsiveclamp(17px, 20px);
+    font-size: fluid(17px, 20px);
   }
 
   &__actions {
