@@ -78,12 +78,13 @@ These are absolute constraints you must obey at all times:
   import heroImg from '../assets/hero.png';
   ---
   <div class="img-wrapper">
-    <Image src={heroImg} alt="Hero banner description" loading="eager" fetchpriority="high" class="cover" />
+    <Image src={heroImg} alt="Hero banner description" priority class="cover" />
   </div>
   ```
 - **Loading Behavior & Lighthouse Optimization:**
-  - **Above-the-fold / Hero Section Images:** Must use `loading="eager"` (and `fetchpriority="high"`) for optimal Largest Contentful Paint (LCP) and high Lighthouse scores.
-  - **Below-the-fold Images:** Must use `loading="lazy"` (default) to conserve bandwidth.
+  - **Hero / LCP Images:** If it's your hero/LCP image, simply use `<Image src={heroImage} alt="..." priority />`. Astro's `priority` prop conveniently applies eager loading + high fetch priority (and its associated decoding settings).
+  - **Above-the-Fold (Non-LCP) Images:** For an image that is merely above the fold but not the main LCP image, `loading="eager"` is sufficient. **Do not mark every image with `priority` or high priority**, because that can compete with your actual critical resources.
+  - **Below-the-Fold Images:** Must use `loading="lazy"` (default) to conserve bandwidth.
   - **Dimensions & Aspect Ratio:** Always specify or preserve explicit dimensions/aspect ratios to eliminate Cumulative Layout Shift (CLS).
 - **Matching Assets:** Check `src/assets/` for assets matching Figma layer names. If absent, use clean project placeholders. Avoid Unsplash or random external stock photos.
 - **Image Wrappers:** Use the `.img-wrapper` helper class and `cover` / `contain` classes from `main.scss`. Always apply `border-radius`, `overflow: hidden`, and sizing constraints to the wrapper element, **not** directly to the `<Image>` component.
