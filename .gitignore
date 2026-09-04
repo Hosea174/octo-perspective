@@ -27,4 +27,4 @@ bun-error.log*
 .vscode/
 
 # ai agent files
-# .agents/
+.agents/
