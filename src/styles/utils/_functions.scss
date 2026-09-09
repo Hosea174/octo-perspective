@@ -28,5 +28,8 @@
   $y-intercept: $min-rem - ($min-w-rem * $slope);
   $slope-vw: $slope * 100;
 
-  @return clamp(#{$min-rem}, #{$y-intercept} + #{$slope-vw}vw, #{$max-rem});
+  $lower-rem: math.min($min-rem, $max-rem);
+  $upper-rem: math.max($min-rem, $max-rem);
+
+  @return clamp(#{$lower-rem}, #{$y-intercept} + #{$slope-vw}vw, #{$upper-rem});
 }
