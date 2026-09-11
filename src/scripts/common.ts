@@ -8,31 +8,48 @@ export type FadeDirection = "toTop" | "toBottom" | "toLeft" | "toRight";
 
 export const fadePresets = {
   "fade-1": {
-    opacity: 0,
-    yPercent: () => responsiveClamp(15, 30),
-    duration: 0.8,
+    autoAlpha: 0,
+    y: () => responsiveClamp(22, 36),
+    duration: 0.75,
     ease: "power3.out",
+    clearProps: "transform",
   },
   "fade-2": {
-    opacity: 0,
-    yPercent: () => responsiveClamp(25, 50),
-    filter: () => `blur(${responsiveClamp(4, 10)}px)`,
-    duration: 1.2,
-    ease: "power4.out",
+    autoAlpha: 0,
+    y: () => responsiveClamp(32, 52),
+    scale: 0.97,
+    duration: 0.85,
+    ease: "power3.out",
+    clearProps: "transform",
   },
   "fade-3": {
-    opacity: 0,
-    xPercent: () => -responsiveClamp(15, 30),
-    duration: 0.5,
-    ease: "power2.out",
+    autoAlpha: 0,
+    x: () => -responsiveClamp(28, 48),
+    duration: 0.75,
+    ease: "power3.out",
+    clearProps: "transform",
   },
   "fade-subtle": {
-    opacity: 0,
-    yPercent: () => responsiveClamp(10, 20),
-    scale: 0.98,
-    filter: () => `blur(${responsiveClamp(2, 4)}px)`,
-    duration: 0.9,
-    ease: "power3.out",
+    autoAlpha: 0,
+    y: () => responsiveClamp(12, 18),
+    duration: 0.55,
+    ease: "power2.out",
+    clearProps: "transform",
+  },
+  "fade-scale": {
+    autoAlpha: 0,
+    scale: 0.94,
+    y: () => responsiveClamp(14, 24),
+    duration: 0.75,
+    ease: "back.out(1.3)",
+    clearProps: "transform",
+  },
+  "fade-btn": {
+    autoAlpha: 0,
+    y: () => responsiveClamp(14, 20),
+    duration: 0.5,
+    ease: "power2.inOut",
+    clearProps: "transform",
   },
 } satisfies Record<string, gsap.TweenVars>;
 
@@ -110,20 +127,26 @@ export function getFadeVars(
   direction: FadeDirection = "toTop",
   presetName: FadePresetName = "fade-1"
 ): gsap.TweenVars {
-  const tweenVars: gsap.TweenVars = { ...fadePresets[presetName] };
+  const preset = fadePresets[presetName] ?? fadePresets["fade-1"];
+  const tweenVars: gsap.TweenVars = { ...preset };
   const resolveVal = (val: unknown) =>
     typeof val === "function" ? (val as () => number)() : val;
-  const distance =
-    Number(resolveVal(tweenVars.yPercent) || resolveVal(tweenVars.xPercent)) ||
-    30;
+
+  const presetRecord = preset as Record<string, unknown>;
+  const rawDist = resolveVal(presetRecord.y) ?? resolveVal(presetRecord.x) ?? 32;
+  const distance = Math.abs(Number(rawDist) || 32);
 
   if (direction === "toLeft" || direction === "toRight") {
-    tweenVars.xPercent = () => (direction === "toLeft" ? distance : -distance);
-    tweenVars.yPercent = 0;
+    tweenVars.x = () => (direction === "toLeft" ? distance : -distance);
+    delete (tweenVars as any).y;
   } else {
-    tweenVars.xPercent = 0;
-    tweenVars.yPercent = () => (direction === "toTop" ? distance : -distance);
+    tweenVars.y = () => (direction === "toTop" ? distance : -distance);
+    delete (tweenVars as any).x;
   }
+
+  delete (tweenVars as any).yPercent;
+  delete (tweenVars as any).xPercent;
+  tweenVars.clearProps = tweenVars.clearProps ?? "transform";
 
   return tweenVars;
 }
@@ -139,8 +162,6 @@ export function animateFadeIn(
       ? document.querySelector<HTMLElement>(el)
       : (el as HTMLElement | null);
   if (!targetEl) return undefined;
-
-  gsap.set(targetEl, { visibility: "visible" });
 
   const tweenVars = getFadeVars(direction, presetName);
   if (scrollTriggerValue) {
@@ -179,5 +200,6 @@ export function initGlobalTextAnimations(): void {
 }
 
 export function revealAnimationTargets(): void {
-  gsap.set("[data-text-anim], [data-fade-in]", { visibility: "visible" });
+  gsap.set("[data-text-anim]", { visibility: "visible" });
+  gsap.set("[data-fade-in]", { autoAlpha: 1 });
 }
