@@ -41,8 +41,13 @@ body.no-scroll {
   overflow: hidden;
 }
 
-[data-text-anim] {
-  visibility: hidden;
+html[data-motion-pending] {
+  [data-text-anim="headerAnimation"],
+  [data-text-anim="bodyAnimation"],
+  [data-fade-in="st"],
+  [data-fade-in^="st:"] {
+    visibility: hidden;
+  }
 }
 
 .mask-lines,
