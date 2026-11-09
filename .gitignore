@@ -31,3 +31,9 @@ bun-error.log*
 
 # temporary full-resolution camera-picker source scene (471 MB)
 /public/media/octo-original.ply
+
+# Local Netlify folder
+.netlify
+
+.vercel
+.env*
