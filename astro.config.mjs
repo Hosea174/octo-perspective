@@ -15,7 +15,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // https://astro.build/config
 export default defineConfig({
   site: "https://yourdomain.com",
-  integrations: [icon(), sitemap(), compressor()],
+  integrations: [icon(), sitemap(), compressor({ fileExtensions: [".css", ".js", ".html", ".xml", ".cjs", ".mjs", ".svg", ".txt", ".wasm"] })],
   image: {
     layout: "constrained",
     objectFit: "cover",
@@ -23,6 +23,7 @@ export default defineConfig({
     breakpoints: [500, 750, 828, 1080, 1280],
     responsiveStyles: true,
   },
+  devToolbar: { enabled: false },
   server: {
     port: 4321,
     host: "0.0.0.0",

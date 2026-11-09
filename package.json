@@ -7,7 +7,7 @@
         "dev": "astro dev",
         "build": "astro build",
         "typecheck": "astro check",
-        "preview": "astro preview",
+        "preview": "vite preview --config vite.preview.config.mjs",
         "astro": "astro"
     },
     "dependencies": {
@@ -26,6 +26,7 @@
         "@astrojs/check": "^0.9.10",
         "@types/three": "^0.187.0",
         "sass": "^1.103.1",
-        "typescript": "^6.0.3"
+        "typescript": "^6.0.3",
+        "vite": "8.2.2"
     }
 }

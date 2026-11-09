@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { Icon } from 'astro-icon/components';
-import background from '../assets/octo/background.png';
+import background from '../assets/octo/background.webp';
 import '../styles/pages/index.scss';
 ---
 <!doctype html>
@@ -12,15 +12,15 @@ import '../styles/pages/index.scss';
   <meta name="description" content="Explore Octo, Wendy Taylor's sculpture in Milton Keynes." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <title>Octo — A Timeless Form</title>
-  <script is:inline>document.documentElement.classList.add('js'); window.setTimeout(() => document.documentElement.classList.add('ready','motion-ready'), 8000);</script>
+  <script is:inline>document.documentElement.classList.add('js'); window.setTimeout(() => { const root = document.documentElement; if (!root.classList.contains('motion-ready')) { root.dataset.motionFallback = 'true'; root.classList.add('ready', 'motion-ready'); } }, 45000);</script>
 </head>
 <body>
-  <div class="preloader" aria-hidden="true"><div class="preloader__mark"><Icon name="octo" /></div><span>Finding perspective</span><div class="preloader__line"></div></div>
+  <div class="preloader" aria-hidden="true"><div class="preloader__mark"><Icon name="octo" /></div><span class="preloader__label">Loading the 3D scene</span><div class="preloader__progress"><div class="preloader__line"><span class="preloader__fill"></span></div><span class="preloader__percentage">0%</span></div></div>
   <div class="background img-wrapper" aria-hidden="true"><Image src={background} alt="" priority sizes="(max-width: 700px) 170vh, 105vw" class="background__image" /></div>
   <div id="scene" aria-hidden="true"></div>
   <main id="top">
     <section class="hero" aria-labelledby="hero-title">
-      <h1 id="hero-title" class="hero__title">A Timeless Form in an Ever-Changing World</h1>
+      <h1 id="hero-title" class="hero__title">A Timeless Form in an Ever-<br class="hero__break" />Changing World</h1>
     </section>
     <section class="chapter chapter--left" aria-label="The form of Octo">
       <article class="chapter__card"><div><Icon name="star" class="chapter__icon" /><h2>The Beauty of a Form Without Beginning or End.</h2></div><p>A continuous ribbon of stainless steel. Twisted into a form that challenges perspective, reflects its surroundings, and transforms with every angle.</p></article>
@@ -29,21 +29,54 @@ import '../styles/pages/index.scss';
       <article class="chapter__card"><div><Icon name="shapes" class="chapter__icon" /><h2>The Beauty of a Form Without Beginning or End.</h2></div><p>A continuous ribbon of stainless steel. Twisted into a form that challenges perspective, reflects its surroundings, and transforms with every angle.</p></article>
     </section>
     <section class="chapter chapter--left" aria-label="The changing form of Octo">
-      <article class="chapter__card"><div><Icon name="star" class="chapter__icon" /><h2>The Beauty of a Form Without Beginning or End.</h2></div><p>A continuous ribbon of stainless steel. Twisted into a form that challenges perspective, reflects its surroundings, and transforms with every angle.</p></article>
+      <article class="chapter__card"><div><Icon name="star" class="chapter__icon" /><h2>A Different View With Every Step.</h2></div><p>As you move, the surrounding trees, sky, and architecture flow across its polished surface. No two perspectives are quite the same.</p></article>
     </section>
     <footer class="footer" id="footer"><div class="footer__inner"><span class="footer__word">OCTO</span><a href="#top" class="footer__top">Scroll to Top</a><span class="footer__line" aria-hidden="true"></span></div><a class="footer__credit" href="https://superspl.at/scene/94b17a0d" target="_blank" rel="noopener noreferrer">Scene: Natural Splats ? CC BY 4.0</a></footer>
   </main>
   <div class="visit-bar" aria-label="Visit Octo">
     <div class="visit-bar__mark" aria-hidden="true"><Icon name="octo-symbol" /></div>
-    <div class="visit-bar__content"><p>Explore shape, space, and infinity. Discover <strong>Octo, Wendy Taylor's</strong> sculpture in Milton Keynes.</p><a href="https://maps.google.com/?q=Octo+sculpture+Milton+Keynes" target="_blank" rel="noopener noreferrer">Pay a Visit</a><span class="visit-bar__surprise" aria-hidden="true"><Icon name="octo-symbol" /></span></div>
+    <div class="visit-bar__content"><p>Explore shape, space, and infinity. Discover <strong>Octo, Wendy Taylor's</strong> sculpture in Milton Keynes.</p><button type="button" id="open-visit">Pay a Visit</button><span class="visit-bar__surprise" aria-hidden="true"><Icon name="octo-symbol" /></span></div>
   </div>
-  <nav class="social-links" aria-label="Social media">
+  <nav class="social-links" aria-label="Social media and source code">
     <a href="https://www.instagram.com/grid.morphic/" target="_blank" rel="noopener noreferrer" aria-label="Instagram (opens in a new tab)"><Icon name="instagram" aria-hidden="true" /></a>
     <a href="https://t.me/gridmorphic" target="_blank" rel="noopener noreferrer" aria-label="Telegram channel (opens in a new tab)"><Icon name="telegram" aria-hidden="true" /></a>
+    <a class="github-link" href="https://github.com/Hosea174/octo-perspective" target="_blank" rel="noopener noreferrer" aria-label="View source on GitHub (opens in a new tab)"><Icon name="github" aria-hidden="true" /><span>GitHub</span></a>
   </nav>
-  <div id="camera-preview" hidden aria-label="Live camera preview with tracking landmarks"><video id="camera" playsinline muted></video><canvas id="heatmap" width="160" height="120" hidden></canvas><canvas id="landmarks" width="640" height="480"></canvas><span id="preview-label">LIVE TRACKING</span><button id="preview-mode" type="button" aria-pressed="false" aria-label="Show brightness heatmap" title="Stylized brightness, not a temperature or depth sensor">Heatmap</button></div>
-  <div class="top-actions"><a class="github-link" href="https://github.com/Hosea174/octo-perspective" target="_blank" rel="noopener noreferrer" aria-label="View source on GitHub (opens in a new tab)"><Icon name="github" aria-hidden="true" /><span>GitHub</span></a><div class="camera-status" data-state="idle"><span class="camera-status__spinner" aria-hidden="true"></span><span id="status" role="status" aria-live="polite"></span><span id="hint"></span><button id="camera-toggle" type="button" hidden>Try camera again</button><button id="recenter" class="camera-status__recenter" type="button" aria-label="Recenter head tracking" title="Recenter head tracking" hidden><span>Recenter</span><Icon name="recenter" aria-hidden="true" /></button></div></div>
+  <div id="camera-preview" hidden aria-label="Live camera preview with tracking landmarks"><video id="camera" playsinline muted></video><canvas id="depth-map" width="160" height="120"></canvas><canvas id="landmarks" width="640" height="480" hidden></canvas><div id="preview-loading" class="camera-preview__loading"><i aria-hidden="true"></i><p id="preview-loading-text">Waiting for camera</p></div><span id="preview-label">LANDMARK DEPTH</span><button id="preview-mode" type="button" aria-pressed="true" aria-label="Show normal camera preview" title="Toggle estimated landmark depth and camera preview">Camera</button></div>
+  <div class="top-actions"><button id="quality-toggle" class="quality-toggle" type="button" aria-expanded="false" aria-controls="quality-panel" aria-label="Open scene quality settings" title="Scene quality settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="11" cy="18" r="2"/></svg></button><button id="help-toggle" class="help-toggle" type="button" aria-expanded="false" aria-controls="help-panel" aria-label="Show gesture help" title="Gesture help">?</button><div class="camera-status" data-state="idle"><span class="camera-status__spinner" aria-hidden="true"></span><span id="status" role="status" aria-live="polite"></span><span id="hint"></span><button id="camera-toggle" type="button" hidden>Try camera again</button><button id="recenter" class="camera-status__recenter" type="button" aria-label="Recenter head tracking" title="Recenter head tracking" hidden><span>Recenter</span><Icon name="recenter" aria-hidden="true" /></button></div></div>
+  <section id="quality-panel" class="quality-panel" aria-label="Scene quality settings" hidden>
+    <header class="panel-header"><h2>Settings</h2><span>OCTO</span></header>
+    <div class="quality-panel__title"><span>Splat quality</span><output id="quality-value" for="quality-range">1.8M max</output></div>
+    <input id="quality-range" type="range" min="0" max="3" step="1" value="3" aria-label="Maximum splat budget" />
+    <div class="quality-panel__ticks" aria-hidden="true"><span>0.5M</span><span>0.9M</span><span>1.3M</span><span>1.8M</span></div>
+    <label class="quality-panel__performance"><span><strong>Performance mode</strong><small>Lower resolution and splat count</small></span><input id="performance-mode" type="checkbox" /><i aria-hidden="true"></i></label>
+    <label class="quality-panel__performance"><span><strong>Camera preview</strong><small>Show the tracking tile</small></span><input id="preview-toggle" type="checkbox" checked /><i aria-hidden="true"></i></label>
+    <button id="quality-reset" class="quality-panel__reset" type="button">Reset</button>
+  </section>
+  <section id="help-panel" class="help-panel" aria-label="Gesture help" hidden>
+    <header class="panel-header"><h2>Gesture guide</h2><button id="help-close" type="button" aria-label="Close gesture guide">×</button></header>
+    <ul>
+      <li><span>Move your head</span><small>Look around the scene; lean closer or farther to zoom.</small></li>
+      <li><span>Point with your index finger</span><small>Move the in-page cursor.</small></li>
+      <li><span>Pinch thumb and index finger</span><small>Click with the virtual cursor.</small></li>
+      <li><span>Make a fist and move up or down</span><small>Scroll the page.</small></li>
+      <li><span>Camera / Depth</span><small>Switch the preview view.</small></li>
+    </ul>
+    <div class="help-panel__spoiler">
+      <p>Hidden gestures</p>
+      <button id="egg-spoiler" type="button" aria-expanded="false">Reveal Easter eggs <span aria-hidden="true">↗</span></button>
+      <div id="egg-confirm" class="help-panel__confirm" hidden><p>Reveal hidden gestures?</p><div><button id="egg-cancel" type="button">Cancel</button><button id="egg-reveal" type="button">Reveal</button></div></div>
+      <div id="egg-details" hidden><p>Open your mouth for a tiny scene-wide tremor and Octo surprise. Show a middle finger and Octo answers with a reminder to be kind.</p></div>
+    </div>
+  </section>
+  <dialog class="visit-modal" aria-labelledby="visit-title">
+    <div class="visit-modal__panel">
+      <div class="visit-modal__top"><h2 id="visit-title">Pay a visit.</h2><button class="visit-modal__close" type="button" aria-label="Close visit form"><span aria-hidden="true">&#215;</span></button></div>
+      <form class="visit-form"><label for="visit-name">FULL NAME</label><input id="visit-name" name="name" type="text" autocomplete="name" placeholder="Your name" /><label for="visit-email">EMAIL ADDRESS</label><input id="visit-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" /><button type="submit">Submit <span aria-hidden="true">&#8599;</span></button></form>
+    </div>
+  </dialog>
+  <div class="visit-toast" role="status" aria-live="polite" hidden><span aria-hidden="true">&#10003;</span><div><strong>Lovely to see you.</strong><small>Thanks for stopping by.</small></div></div>
   <div id="cursor" aria-hidden="true"><i class="cursor__pulse"></i><span></span></div>
-  <script>import '../scripts/playground'; import '../scripts/octo-motion';</script>
+  <script>import '../scripts/playground'; import '../scripts/octo-motion'; import '../scripts/visit-modal';</script>
 </body>
 </html>

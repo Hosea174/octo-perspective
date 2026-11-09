@@ -9,6 +9,10 @@
 
 let face: FaceLandmarker | undefined;
 let hand: HandLandmarker | undefined;
+type NormalizedLandmark = { x: number; y: number; z: number };
+let lastHandDetection = -Infinity;
+let latestHandPoints: NormalizedLandmark[] | undefined;
+const handDetectionInterval = 66;
 
 async function initialize() {
   const vision = await FilesetResolver.forVisionTasks('/wasm');
@@ -29,14 +33,17 @@ async function initialize() {
 
 self.onmessage = async (event: MessageEvent) => {
   if (event.data.type === 'init') {
-    try { await initialize(); self.postMessage({ type: 'ready' }); }
+    try { await initialize(); lastHandDetection = -Infinity; latestHandPoints = undefined; self.postMessage({ type: 'ready' }); }
     catch (error) { self.postMessage({ type: 'error', message: String(error) }); }
   } else if (event.data.type === 'frame') {
     const { bitmap, timestamp } = event.data as { bitmap: ImageBitmap; timestamp: number };
     try {
       const facePoints = face?.detectForVideo(bitmap, timestamp).faceLandmarks[0];
-      const handPoints = hand?.detectForVideo(bitmap, timestamp).landmarks[0];
-      self.postMessage({ type: 'result', facePoints, handPoints, timestamp });
+      if (hand && timestamp - lastHandDetection >= handDetectionInterval) {
+        latestHandPoints = hand.detectForVideo(bitmap, timestamp).landmarks[0];
+        lastHandDetection = timestamp;
+      }
+      self.postMessage({ type: 'result', facePoints, handPoints: latestHandPoints, timestamp });
     } catch (error) { self.postMessage({ type: 'error', message: String(error) }); }
     finally { bitmap.close(); }
   }

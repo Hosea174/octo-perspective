@@ -10,6 +10,11 @@ function extended(p: Point[], mcp: number, pip: number, tip: number) {
   return cosine < -0.55 && dist(c, p[0]) > dist(b, p[0]) * 1.12;
 }
 
+export function isMiddleFinger(p: Point[] | undefined): boolean {
+  return !!p && p.length >= 21 && extended(p, 9, 10, 12)
+    && !extended(p, 5, 6, 8) && !extended(p, 13, 14, 16) && !extended(p, 17, 18, 20);
+}
+
 export function classifyHand(p: Point[], previous: Gesture): Gesture {
   if (p.length < 21) return 'idle';
   const index = extended(p, 5, 6, 8);

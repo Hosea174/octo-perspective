@@ -1,11 +1,13 @@
 import * as THREE from 'three';
-import { SparkRenderer, SplatMesh } from '@sparkjsdev/spark';
-import { FaceLandmarker, HandLandmarker, DrawingUtils, type NormalizedLandmark } from '@mediapipe/tasks-vision';
+import type { SparkRenderer, SplatMesh } from '@sparkjsdev/spark';
+import type { DrawingUtils, NormalizedLandmark } from '@mediapipe/tasks-vision';
 import { gsap } from 'gsap';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { GestureTracker, faceZoom, steadyHand, type Point } from './gestures';
+import { GestureTracker, faceZoom, steadyHand, isMiddleFinger, type Point } from './gestures';
+import { createMouthSurprise } from './mouth-surprise';
+import { activateVirtualClick } from './virtual-click';
 
 gsap.registerPlugin(ScrollTrigger);
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -18,37 +20,74 @@ gsap.ticker.lagSmoothing(0);
 const sceneEl = document.querySelector('#scene') as HTMLElement;
 const video = document.querySelector('#camera') as HTMLVideoElement;
 const preview = document.querySelector('#camera-preview') as HTMLElement;
-const heatmap = document.querySelector('#heatmap') as HTMLCanvasElement;
-const heatContext = heatmap.getContext('2d', { willReadFrequently: true })!;
+const depthMap = document.querySelector('#depth-map') as HTMLCanvasElement;
+const depthContext = depthMap.getContext('2d')!;
+const landmarkCanvas = document.querySelector('#landmarks') as HTMLCanvasElement;
 const previewMode = document.querySelector('#preview-mode') as HTMLButtonElement;
 const previewLabel = document.querySelector('#preview-label') as HTMLElement;
-let heatmapEnabled = false, lastHeatmap = 0;
+let depthEnabled = true;
 previewMode.addEventListener('click', () => {
-  heatmapEnabled = !heatmapEnabled;
-  heatmap.hidden = !heatmapEnabled;
-  previewMode.setAttribute('aria-pressed', String(heatmapEnabled));
-  previewMode.setAttribute('aria-label', heatmapEnabled ? 'Show normal camera preview' : 'Show brightness heatmap');
-  previewMode.textContent = heatmapEnabled ? 'Camera' : 'Heatmap';
-  previewLabel.textContent = heatmapEnabled ? 'BRIGHTNESS MAP' : 'LIVE TRACKING';
+  depthEnabled = !depthEnabled;
+  depthMap.hidden = !depthEnabled;
+  landmarkCanvas.hidden = depthEnabled;
+  previewMode.setAttribute('aria-pressed', String(depthEnabled));
+  previewMode.setAttribute('aria-label', depthEnabled ? 'Show normal camera preview' : 'Show estimated landmark depth');
+  previewMode.textContent = depthEnabled ? 'Camera' : 'Depth';
+  previewLabel.textContent = depthEnabled ? 'LANDMARK DEPTH' : 'LIVE TRACKING';
 });
-function drawHeatmap(now: number) {
-  if (!heatmapEnabled || now - lastHeatmap < 100 || video.readyState < 2) return;
-  lastHeatmap = now;
-  heatContext.drawImage(video, 0, 0, heatmap.width, heatmap.height);
-  const frame = heatContext.getImageData(0, 0, heatmap.width, heatmap.height);
-  for (let i = 0; i < frame.data.length; i += 4) {
-    const light = (frame.data[i] * .2126 + frame.data[i + 1] * .7152 + frame.data[i + 2] * .0722) / 255;
-    frame.data[i] = Math.min(255, Math.max(0, (light * 3 - .5) * 255));
-    frame.data[i + 1] = Math.min(255, Math.max(0, (light * 3 - 1.5) * 255));
-    frame.data[i + 2] = Math.min(255, Math.max(0, (1.2 - light * 2.2) * 255));
+function drawDepthMap(face?: NormalizedLandmark[], hand?: NormalizedLandmark[]) {
+  if (!depthEnabled) return;
+  const ctx = depthContext, w = depthMap.width, h = depthMap.height;
+  ctx.fillStyle = '#080808';
+  ctx.fillRect(0, 0, w, h);
+  if (face?.length) {
+    const depths = face.map(point => point.z);
+    const near = Math.min(...depths), range = Math.max(.001, Math.max(...depths) - near);
+    const edges = FaceLandmarker.FACE_LANDMARKS_TESSELATION;
+    for (let i = 0; i + 2 < edges.length; i += 3) {
+      const a = face[edges[i].start], b = face[edges[i].end], c = face[edges[i + 1].end];
+      if (!a || !b || !c) continue;
+      const shade = Math.round(45 + 200 * (1 - ((a.z + b.z + c.z) / 3 - near) / range));
+      ctx.fillStyle = `rgb(${shade}, ${shade}, ${shade})`;
+      ctx.beginPath(); ctx.moveTo(a.x * w, a.y * h); ctx.lineTo(b.x * w, b.y * h); ctx.lineTo(c.x * w, c.y * h); ctx.closePath(); ctx.fill();
+    }
   }
-  heatContext.putImageData(frame, 0, 0);
+  if (hand?.length) {
+    const depths = hand.map(point => point.z);
+    const near = Math.min(...depths), range = Math.max(.001, Math.max(...depths) - near);
+    ctx.lineWidth = 5; ctx.lineCap = 'round';
+    for (const edge of HandLandmarker.HAND_CONNECTIONS) {
+      const a = hand[edge.start], b = hand[edge.end];
+      if (!a || !b) continue;
+      const shade = Math.round(60 + 195 * (1 - ((a.z + b.z) / 2 - near) / range));
+      ctx.strokeStyle = `rgb(${shade}, ${shade}, ${shade})`;
+      ctx.beginPath(); ctx.moveTo(a.x * w, a.y * h); ctx.lineTo(b.x * w, b.y * h); ctx.stroke();
+    }
+  }
 }
-const landmarkCanvas = document.querySelector('#landmarks') as HTMLCanvasElement;
 const landmarkContext = landmarkCanvas.getContext('2d')!;
-const drawing = new DrawingUtils(landmarkContext);
+let FaceLandmarker: typeof import('@mediapipe/tasks-vision').FaceLandmarker;
+let HandLandmarker: typeof import('@mediapipe/tasks-vision').HandLandmarker;
+let drawing: DrawingUtils;
 const toggle = document.querySelector('#camera-toggle') as HTMLButtonElement;
 const recenter = document.querySelector('#recenter') as HTMLButtonElement;
+const qualityToggle = document.querySelector('#quality-toggle') as HTMLButtonElement;
+const qualityPanel = document.querySelector('#quality-panel') as HTMLElement;
+const helpToggle = document.querySelector('#help-toggle') as HTMLButtonElement;
+const helpPanel = document.querySelector('#help-panel') as HTMLElement;
+const helpClose = document.querySelector('#help-close') as HTMLButtonElement;
+const eggSpoiler = document.querySelector('#egg-spoiler') as HTMLButtonElement;
+const eggDetails = document.querySelector('#egg-details') as HTMLElement;
+const previewToggle = document.querySelector('#preview-toggle') as HTMLInputElement;
+const eggConfirm = document.querySelector('#egg-confirm') as HTMLElement;
+const eggCancel = document.querySelector('#egg-cancel') as HTMLButtonElement;
+const eggReveal = document.querySelector('#egg-reveal') as HTMLButtonElement;
+const previewLoading = document.querySelector('#preview-loading') as HTMLElement;
+const previewLoadingText = document.querySelector('#preview-loading-text') as HTMLElement;
+const qualityRange = document.querySelector('#quality-range') as HTMLInputElement;
+const qualityValue = document.querySelector('#quality-value') as HTMLOutputElement;
+const performanceToggle = document.querySelector('#performance-mode') as HTMLInputElement;
+const qualityReset = document.querySelector('#quality-reset') as HTMLButtonElement;
 const status = document.querySelector('#status') as HTMLElement;
 const statusContainer = document.querySelector('.camera-status') as HTMLElement;
 function setCameraStatus(message: string, state: 'idle' | 'loading' | 'error' = 'idle') { status.textContent = message; statusContainer.dataset.state = state; }
@@ -68,43 +107,172 @@ let worker: Worker | null = null;
 let framePending = false;
 let running = false, starting = false, lastVideo = -1, lastDetect = 0, lastFaceSeen = 0;
 const gestures = new GestureTracker();
+const updateMouthSurprise = createMouthSurprise();
 let grabY = 0, grabScroll = 0, filteredGrabY = 0, wasGrabbing = false, cursorX = innerWidth/2, cursorY = innerHeight/2;
 let filteredX = .5, filteredY = .5, cursorAcquired = false;
-let generation = 0;
-function project() {
+let generation = 0, lastRender = 0, lastOverlayDraw = 0;
+let sceneDirty = true;
+const qualityBudgets = [500_000, 900_000, 1_300_000, 1_800_000];
+function applyQualitySettings() {
+  const budget = qualityBudgets[Number(qualityRange.value)] ?? qualityBudgets[3];
+  const performance = performanceToggle.checked;
+  const effectiveBudget = performance ? Math.min(budget, 800_000) : budget;
+  if (spark) {
+    spark.lodSplatCount = effectiveBudget;
+    spark.lodRenderScale = performance ? 1.15 : 1;
+  }
+  if (renderer) {
+    renderer.setPixelRatio(Math.min(devicePixelRatio, performance ? 1 : 1.5));
+    renderer.setSize(innerWidth, innerHeight);
+  }
+  qualityValue.value = performance ? `${Number((effectiveBudget / 1_000_000).toFixed(1))}M max · Performance` : `${Number((effectiveBudget / 1_000_000).toFixed(1))}M max`;
+  sceneDirty = true;
+}
+function setQualityPanel(open: boolean) {
+  qualityPanel.hidden = !open;
+  qualityToggle.setAttribute('aria-expanded', String(open));
+}
+function setHelpPanel(open: boolean) {
+  helpPanel.hidden = !open;
+  helpToggle.setAttribute('aria-expanded', String(open));
+}
+qualityToggle.addEventListener('click', () => {
+  const open = Boolean(qualityPanel.hidden);
+  if (open) setHelpPanel(false);
+  setQualityPanel(open);
+});
+helpToggle.addEventListener('click', () => {
+  const open = Boolean(helpPanel.hidden);
+  if (open) setQualityPanel(false);
+  setHelpPanel(open);
+});
+helpClose.addEventListener('click', () => setHelpPanel(false));
+eggSpoiler.addEventListener('click', () => {
+  if (!eggDetails.hidden) {
+    eggDetails.hidden = true;
+    eggSpoiler.setAttribute('aria-expanded', 'false');
+    return;
+  }
+  eggConfirm.hidden = false;
+  eggSpoiler.hidden = true;
+  eggCancel.focus();
+});
+eggCancel.addEventListener('click', () => {
+  eggConfirm.hidden = true;
+  eggSpoiler.hidden = false;
+  eggSpoiler.focus();
+});
+eggReveal.addEventListener('click', () => {
+  eggConfirm.hidden = true;
+  eggSpoiler.hidden = false;
+  eggDetails.hidden = false;
+  eggSpoiler.setAttribute('aria-expanded', 'true');
+  eggSpoiler.focus();
+});
+previewToggle.addEventListener('change', () => {
+  preview.hidden = !previewToggle.checked || (!running && !starting);
+});
+qualityRange.addEventListener('input', applyQualitySettings);
+performanceToggle.addEventListener('change', applyQualitySettings);
+qualityReset.addEventListener('click', () => {
+  qualityRange.value = matchMedia('(max-width: 700px)').matches ? '1' : '3';
+  performanceToggle.checked = false;
+  applyQualitySettings();
+});
+document.addEventListener('click', (event) => {
+  if (!qualityPanel.hidden && !qualityPanel.contains(event.target as Node) && !qualityToggle.contains(event.target as Node)) setQualityPanel(false);
+  if (!helpPanel.hidden && !helpPanel.contains(event.target as Node) && !helpToggle.contains(event.target as Node)) setHelpPanel(false);
+});
+document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { setQualityPanel(false); setHelpPanel(false); } });
+let rudeSince = 0, rudeArmed = true, lastRude = -Infinity;
+export function reactToMiddleFinger(points: Point[] | undefined, now: number) {
+  if (!isMiddleFinger(points)) { rudeSince = 0; rudeArmed = true; return; }
+  if (!rudeArmed) return;
+  if (!rudeSince) rudeSince = now;
+  if (now - rudeSince < 220 || now - lastRude < 5000) return;
+  rudeArmed = false; lastRude = now;
+  const message = document.createElement('div');
+  message.className = 'kindness-message';
+  message.setAttribute('role', 'status');
+  message.innerHTML = `<div class="kindness-message__wash"></div>
+    <div class="kindness-message__content">
+      <span class="kindness-message__eyebrow">That's not very nice.</span>
+      <div class="kindness-message__title"><span>LOVE</span><span>YOU TOO.</span></div>
+      <svg class="kindness-message__smile" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#ffd53d"/><circle cx="35" cy="40" r="4" fill="#111"/><circle cx="65" cy="40" r="4" fill="#111"/><path d="M29 58c5 12 13 18 21 18s16-6 21-18" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/></svg>
+      <span class="kindness-message__footnote">A little kindness goes a long way.</span>
+    </div>`;
+  document.body.append(message);
+  gsap.timeline({ onComplete: () => message.remove() })
+    .fromTo(message.querySelector('.kindness-message__wash'), { opacity: 0 }, { opacity: 1, duration: .35 }, 0)
+    .fromTo(message.querySelectorAll('.kindness-message__title span'), { yPercent: 65, rotation: -4, opacity: 0 }, { yPercent: 0, rotation: 0, opacity: 1, duration: .7, stagger: .1, ease: 'back.out(1.3)' }, .05)
+    .fromTo(message.querySelector('.kindness-message__smile'), { scale: 0, rotation: -90 }, { scale: 1, rotation: 12, duration: .65, ease: 'back.out(2)' }, .3)
+    .fromTo(message.querySelectorAll('.kindness-message__eyebrow, .kindness-message__footnote'), { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: .4, stagger: .12 }, .45)
+    .to(message.querySelector('.kindness-message__smile'), { rotation: -12, duration: .55, repeat: 2, yoyo: true, ease: 'sine.inOut' }, .95)
+    .to(message, { opacity: 0, scale: 1.04, duration: .45, ease: 'power2.in' }, 3.2);
+}
+const sceneEye = new THREE.Vector3(-15.404, 2.978, 8.593);
+const sceneTarget = new THREE.Vector3(-9.25, 2.835, 5.712);
+const sceneDistance = sceneEye.distanceTo(sceneTarget);
+camera.fov = 48;
+camera.position.copy(sceneEye);
+camera.lookAt(sceneTarget);
+const sceneOrientation = camera.quaternion.clone();
+const sceneRight = new THREE.Vector3(1, 0, 0).applyQuaternion(sceneOrientation);
+const sceneUp = new THREE.Vector3(0, 1, 0).applyQuaternion(sceneOrientation);
+function project(force = false) {
+  const previousZoom = zoom, previousEyeX = eyeX, previousEyeY = eyeY;
   zoom += (targetZoom - zoom) * 0.14;
-  const width = 0.34 * 0.95 / zoom, height = 0.19 * 0.95 / zoom, distance = 0.6, near = 0.05;
   eyeX += (targetX - eyeX) * 0.3; eyeY += (targetY - eyeY) * 0.3;
-  camera.position.set(eyeX, eyeY, distance);
-  camera.lookAt(eyeX, eyeY, 0);
-  camera.projectionMatrix.makePerspective((-width/2-eyeX)*near/distance, (width/2-eyeX)*near/distance, (height/2-eyeY)*near/distance, (-height/2-eyeY)*near/distance, near, 1000);
+  if (Math.abs(targetZoom - zoom) < 0.0005) zoom = targetZoom;
+  if (Math.abs(targetX - eyeX) < 0.0005) eyeX = targetX;
+  if (Math.abs(targetY - eyeY) < 0.0005) eyeY = targetY;
+  const changed = force || Math.abs(zoom - previousZoom) > 0.0001 || Math.abs(eyeX - previousEyeX) > 0.0001 || Math.abs(eyeY - previousEyeY) > 0.0001;
+  if (!changed) return false;
+  const offsetX = eyeX * 10, offsetY = eyeY * 8;
+  const height = 2 * sceneDistance * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / zoom;
+  const width = height * innerWidth / innerHeight, near = .05;
+  camera.position.copy(sceneEye).addScaledVector(sceneRight, offsetX).addScaledVector(sceneUp, offsetY);
+  camera.quaternion.copy(sceneOrientation);
+  camera.projectionMatrix.makePerspective((-width/2-offsetX)*near/sceneDistance, (width/2-offsetX)*near/sceneDistance, (height/2-offsetY)*near/sceneDistance, (-height/2-offsetY)*near/sceneDistance, near, 1000);
   camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+  return true;
 }
-function resize() {
-  const aspect = 34 / 19;
-  const width = Math.min(innerWidth, innerHeight * aspect);
-  const height = width / aspect;
-  renderer?.setSize(width, height);
-}
-if (new URLSearchParams(location.search).get('scene') === '3d') {
-try {
-  sceneEl.style.display = 'flex';
+function resize() { renderer?.setSize(innerWidth, innerHeight); sceneDirty = true; }
+async function initScene() { try {
   renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.25)); resize(); sceneEl.appendChild(renderer.domElement);
-  spark = new SparkRenderer({ renderer, enableLod: true, lodSplatCount: 1000000 }); scene.add(spark);
-  splat = new SplatMesh({ url: '/media/demoSplat.ply', lod: true });
-  splat.position.set(0, -0.02, 0); splat.scale.setScalar(0.05);
-  splat.initialized.then(() => scene.add(splat!)).catch((error: unknown) => { console.error('Scene failed to load', error); hint.textContent = 'The scene could not load. Camera controls are still available.'; });
-  const draw = () => { if (document.visibilityState === 'visible') { project(); renderer?.render(scene, camera); } requestAnimationFrame(draw); }; draw();
+  const { SparkRenderer, SplatMesh } = await import('@sparkjsdev/spark');
+  const isSmallScreen = matchMedia('(max-width: 700px)').matches;
+  if (isSmallScreen) qualityRange.value = '1';
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); resize(); sceneEl.appendChild(renderer.domElement);
+  spark = new SparkRenderer({ renderer, enableLod: true, lodSplatCount: qualityBudgets[Number(qualityRange.value)], lodRenderScale: 1, focalAdjustment: 2, sortRadial: false, onDirty: () => { sceneDirty = true; } }); scene.add(spark);
+  applyQualitySettings();
+  splat = new SplatMesh({ url: '/media/octo.spz', lod: true, onProgress: (event) => {
+    window.dispatchEvent(new CustomEvent('octo:scene-progress', { detail: { loaded: event.loaded, total: event.total, lengthComputable: event.lengthComputable } }));
+  } });
+  splat.rotation.x = Math.PI;
+  splat.initialized.then(() => { scene.add(splat!); sceneEl.style.display = 'flex'; sceneDirty = true; document.documentElement.dataset.sceneReady = 'loaded'; window.dispatchEvent(new CustomEvent('octo:scene-ready', { detail: { success: true } })); }).catch((error: unknown) => { console.error('Scene failed to load', error); document.documentElement.dataset.sceneReady = 'failed'; window.dispatchEvent(new CustomEvent('octo:scene-ready', { detail: { success: false } })); });
+  const draw = (now = 0) => {
+    requestAnimationFrame(draw);
+    if (document.visibilityState !== 'visible' || now - lastRender < 33) return;
+    lastRender = now;
+    const forceRender = sceneDirty;
+    const cameraChanged = project(forceRender);
+    if (forceRender || cameraChanged) {
+      sceneDirty = false;
+      renderer?.render(scene, camera);
+    }
+  };
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') sceneDirty = true; });
+  draw();
   addEventListener('resize', resize);
-} catch (error) { console.error('WebGL unavailable', error); hint.textContent = '3D is unavailable on this device. You can still explore the page.'; }
-}
+} catch (error) { console.error('Scene initialization failed', error); document.documentElement.dataset.sceneReady = 'failed'; window.dispatchEvent(new CustomEvent('octo:scene-ready', { detail: { success: false } })); } }
+void initScene();
 
 function stop() {
   generation++; running = false; starting = false;
   stream?.getTracks().forEach(track => track.stop()); stream = null; video.srcObject = null;
   worker?.terminate(); worker = null; framePending = false;
-  preview.hidden = true; landmarkContext.clearRect(0, 0, landmarkCanvas.width, landmarkCanvas.height);
+  preview.hidden = true; previewLoading.hidden = false; previewLoadingText.textContent = 'Waiting for camera'; landmarkContext.clearRect(0, 0, landmarkCanvas.width, landmarkCanvas.height);
   neutral = null; latestFace = null; targetX = targetY = 0; targetZoom = 1; wasGrabbing = false; lenis.scrollTo(lenis.scroll, { immediate: true }); gestures.reset(); lastVideo = -1;
   cursor.style.display = 'none'; cursor.classList.remove('active');
   document.body.classList.remove('camera-on'); toggle.disabled = false; toggle.hidden = false; recenter.hidden = true; setCameraStatus('Camera is off', 'error');
@@ -135,8 +303,7 @@ function trackHand(points: Point[] | undefined, now: number) {
     cursor.classList.toggle('active', state === 'pinch');
     if (state === 'pinch' && entered) {
       cursor.querySelector('.cursor__pulse')?.animate([{ transform: 'scale(.65)', opacity: .95 }, { transform: 'scale(1.9)', opacity: 0 }], { duration: 450, easing: 'ease-out' });
-      const element = document.elementFromPoint(cursorX, cursorY)?.closest('a,button,input,select,textarea,[role="button"]');
-      if (element instanceof HTMLElement && !element.matches(':disabled,[aria-disabled="true"]')) element.click();
+      activateVirtualClick(cursorX, cursorY);
     }
   }
   return state;
@@ -162,14 +329,19 @@ function handleTracking(landmarks: Landmark[] | undefined, handPoints: Landmark[
     latestFace = { x: landmarks[1].x, y: landmarks[1].y, width }; lastFaceSeen = now;
     if (!neutral && width > .01) neutral = { ...latestFace };
     if (neutral && !reducedMotion.matches) {
-      targetX = Math.max(-.18, Math.min(.18, -(latestFace.x-neutral.x)*1.1));
+      targetX = Math.max(-.22, Math.min(.22, -(latestFace.x-neutral.x)*1.1));
       targetY = Math.max(-.14, Math.min(.14, -(latestFace.y-neutral.y)*1.1));
       targetZoom = faceZoom(width, neutral.width);
     }
   } else if (now-lastFaceSeen > 1000) { targetX = targetY = 0; targetZoom = 1; }
+  updateMouthSurprise(landmarks, now);
+  reactToMiddleFinger(handPoints, now);
   const gesture = trackHand(handPoints, now);
-  drawLandmarks(landmarks, handPoints);
-  drawHeatmap(now);
+  if (now - lastOverlayDraw >= 66) {
+    lastOverlayDraw = now;
+    drawLandmarks(landmarks, handPoints);
+    drawDepthMap(landmarks, handPoints);
+  }
   setCameraStatus('');
   preview.dataset.gesture = gesture;
 }
@@ -186,14 +358,19 @@ function tick(now: number) {
 }
 async function start() {
   if (starting || running) return;
-  starting = true; const current = ++generation; toggle.disabled = true; setCameraStatus('Starting camera', 'loading');
+  starting = true; const current = ++generation; toggle.disabled = true; previewLoadingText.textContent = 'Waiting for camera permission'; previewLoading.hidden = false; preview.hidden = !previewToggle.checked; setCameraStatus('Starting camera', 'loading');
   try {
     if (!navigator.mediaDevices?.getUserMedia) throw new Error('Camera access requires HTTPS or localhost.');
     const cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false });
     if (current !== generation) { cameraStream.getTracks().forEach(t => t.stop()); return; }
     stream = cameraStream; video.srcObject = stream; await video.play();
     setCameraStatus('Loading tracking', 'loading');
-    preview.hidden = false;
+    previewLoadingText.textContent = 'Loading face and hand tracking';
+    previewLoading.hidden = false;
+    const vision = await import('@mediapipe/tasks-vision');
+    if (current !== generation) return;
+    FaceLandmarker = vision.FaceLandmarker; HandLandmarker = vision.HandLandmarker;
+    drawing = new vision.DrawingUtils(landmarkContext);
     const tracker = new Worker(new URL('./tracking.worker.ts', import.meta.url), { type: 'module' });
     worker = tracker;
     await new Promise<void>((resolve, reject) => {
@@ -215,7 +392,7 @@ async function start() {
       }
     };
     tracker.onerror = (event) => { console.error('Tracking worker failed', event.message); stop(); setCameraStatus('Tracking stopped', 'error'); hint.textContent = 'Try enabling the camera again.'; };
-    running = true; starting = false; toggle.disabled = false;
+    running = true; starting = false; toggle.disabled = false; previewLoading.hidden = true; preview.dataset.state = 'live';
     toggle.hidden = true; recenter.hidden = false; setCameraStatus(''); document.body.classList.add('camera-on');
     hint.textContent = 'Point to move · pinch to select · fist to scroll';
     stream.getVideoTracks()[0]?.addEventListener('ended', () => { stop(); setCameraStatus('Camera disconnected', 'error'); });

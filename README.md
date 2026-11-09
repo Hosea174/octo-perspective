@@ -13,11 +13,13 @@ Open the local URL and allow camera access. Point to move the virtual cursor, pi
 
 ## 3D scene
 
-The Three.js and Spark prototype remains available at `/?scene=3d`, using `public/media/demoSplat.ply` as its temporary scene. The default route does not load the 3D scene. Replace the asset and adjust its framing in `src/scripts/playground.ts` when the custom scene is ready.
+The default route renders `public/media/octo.spz` with Three.js and Spark. The still image is used as a fallback if the scene cannot load. Adjust the asset and its camera framing in `src/scripts/playground.ts` to use a different scene.
+
+The build includes precompressed MediaPipe WASM files. Run `bun run preview` after building to serve them locally with content negotiation. Production hosting must also serve the `.br` or `.gz` version in response to `Accept-Encoding`, with the appropriate `Content-Encoding` and `application/wasm` content type; the original files remain available for hosts that do not support this.
 
 ## Assets and type
 
-The design uses locally installed Creators and Helvetica Now Display fonts where available; fallback fonts are provided. Font files are not included in the repository. The Octo sculpture scan is [Infinity Octo Art MK](https://superspl.at/scene/94b17a0d) by Natural Splats, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The temporary 3D scene is from [sensai-off-axis](https://github.com/V4C38/sensai-off-axis).
+The design uses local Creators and Helvetica Now Display font files. The Octo sculpture scan is [Infinity Octo Art MK](https://superspl.at/scene/94b17a0d) by Natural Splats, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ```sh
 bun src/scripts/gestures.test.ts

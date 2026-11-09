@@ -28,3 +28,6 @@ bun-error.log*
 
 # ai agent files
 .agents/
+
+# temporary full-resolution camera-picker source scene (471 MB)
+/public/media/octo-original.ply
