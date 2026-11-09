@@ -1,35 +1,26 @@
-# Astro Starter
+# Octo Perspective
 
-Lightweight static Astro starter for new website projects, powered by **Bun**.
+An Astro and GSAP experience exploring Wendy Taylor's Octo sculpture. The Figma background is currently a fixed image. Webcam face and hand tracking run locally in a worker; normal mouse, touch, and keyboard navigation remain available.
 
-## Commands
+## Run
 
 ```sh
 bun install
 bun run dev
-bun run build
-bun run typecheck
-bun run preview
 ```
 
-## Dependency Refresh
+Open the local URL and allow camera access. Point to move the virtual cursor, pinch to click, and make a fist and move your hand to scroll. The browser downloads MediaPipe models when tracking starts. Camera access requires localhost or HTTPS.
 
-This template follows the same refresh flow used by `astro-starter-cli`:
+## 3D scene
+
+The Three.js and Spark prototype remains available at `/?scene=3d`, using `public/media/demoSplat.ply` as its temporary scene. The default route does not load the 3D scene. Replace the asset and adjust its framing in `src/scripts/playground.ts` when the custom scene is ready.
+
+## Assets and type
+
+The design uses locally installed Creators and Helvetica Now Display fonts where available; fallback fonts are provided. Font files are not included in the repository. The Octo sculpture scan is [Infinity Octo Art MK](https://superspl.at/scene/94b17a0d) by Natural Splats, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The temporary 3D scene is from [sensai-off-axis](https://github.com/V4C38/sensai-off-axis).
 
 ```sh
-bun install
-bun update
-bun install
+bun src/scripts/gestures.test.ts
+bun run typecheck
+bun run build
 ```
-
-## Structure
-
-- `src/assets/`: image and vector assets.
-- `src/icons/`: SVG icon library (used with `<Icon name="..." />`).
-- `src/layouts/Layout.astro`: shared document shell.
-- `src/components/ResponsivePicture.astro`: reusable responsive image helper.
-- `src/components/Button.astro`: small example component showing variants.
-- `src/styles/`: reset, helpers, and token/typography SCSS architecture.
-- `.agents/figma-to-code/`: AI frontend guidelines for page and component generation.
-
-Replace the sample page, header, footer, and button styles for each project.

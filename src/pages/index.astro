@@ -1,30 +1,49 @@
 ---
-import Button from "../components/Button.astro";
-import Footer from "../components/Footer.astro";
-import Header from "../components/Header.astro";
-import Layout from "../layouts/Layout.astro";
-
-import "../styles/pages/index.scss";
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
+import background from '../assets/octo/background.png';
+import '../styles/pages/index.scss';
 ---
-
-<Layout title="Astro Starter" description="A lightweight Astro starter template.">
-  <Header />
-
-  <main class="home-page">
-    <section class="home-hero container">
-      <p class="home-hero__eyebrow" data-fade-in="st">Astro Starter</p>
-      <h1 class="home-hero__title" data-text-anim="headerAnimation">
-        Start clean, then design the project.
-      </h1>
-      <p class="home-hero__copy" data-fade-in="st:fade-subtle">
-        Replace this page with the real project content. The starter keeps only the reusable shell, motion hooks, and component examples.
-      </p>
-      <div class="home-hero__actions" data-fade-in="st">
-        <Button text="Primary action" href="/about" />
-        <Button text="Ghost action" href="#example" variant="ghost" />
-      </div>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Explore Octo, Wendy Taylor's sculpture in Milton Keynes." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <title>Octo — A Timeless Form</title>
+  <script is:inline>document.documentElement.classList.add('js'); window.setTimeout(() => document.documentElement.classList.add('ready','motion-ready'), 8000);</script>
+</head>
+<body>
+  <div class="preloader" aria-hidden="true"><div class="preloader__mark"><Icon name="octo" /></div><span>Finding perspective</span><div class="preloader__line"></div></div>
+  <div class="background img-wrapper" aria-hidden="true"><Image src={background} alt="" priority sizes="(max-width: 700px) 170vh, 105vw" class="background__image" /></div>
+  <div id="scene" aria-hidden="true"></div>
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title" class="hero__title">A Timeless Form in an Ever-Changing World</h1>
     </section>
+    <section class="chapter chapter--left" aria-label="The form of Octo">
+      <article class="chapter__card"><div><Icon name="star" class="chapter__icon" /><h2>The Beauty of a Form Without Beginning or End.</h2></div><p>A continuous ribbon of stainless steel. Twisted into a form that challenges perspective, reflects its surroundings, and transforms with every angle.</p></article>
+    </section>
+    <section class="chapter chapter--right" aria-label="Octo from another perspective">
+      <article class="chapter__card"><div><Icon name="shapes" class="chapter__icon" /><h2>The Beauty of a Form Without Beginning or End.</h2></div><p>A continuous ribbon of stainless steel. Twisted into a form that challenges perspective, reflects its surroundings, and transforms with every angle.</p></article>
+    </section>
+    <section class="chapter chapter--left" aria-label="The changing form of Octo">
+      <article class="chapter__card"><div><Icon name="star" class="chapter__icon" /><h2>The Beauty of a Form Without Beginning or End.</h2></div><p>A continuous ribbon of stainless steel. Twisted into a form that challenges perspective, reflects its surroundings, and transforms with every angle.</p></article>
+    </section>
+    <footer class="footer" id="footer"><div class="footer__inner"><span class="footer__word">OCTO</span><a href="#top" class="footer__top">Scroll to Top</a><span class="footer__line" aria-hidden="true"></span></div><a class="footer__credit" href="https://superspl.at/scene/94b17a0d" target="_blank" rel="noopener noreferrer">Scene: Natural Splats ? CC BY 4.0</a></footer>
   </main>
-
-  <Footer />
-</Layout>
+  <div class="visit-bar" aria-label="Visit Octo">
+    <div class="visit-bar__mark" aria-hidden="true"><Icon name="octo-symbol" /></div>
+    <div class="visit-bar__content"><p>Explore shape, space, and infinity. Discover <strong>Octo, Wendy Taylor's</strong> sculpture in Milton Keynes.</p><a href="https://maps.google.com/?q=Octo+sculpture+Milton+Keynes" target="_blank" rel="noopener noreferrer">Pay a Visit</a><span class="visit-bar__surprise" aria-hidden="true"><Icon name="octo-symbol" /></span></div>
+  </div>
+  <nav class="social-links" aria-label="Social media">
+    <a href="https://www.instagram.com/grid.morphic/" target="_blank" rel="noopener noreferrer" aria-label="Instagram (opens in a new tab)"><Icon name="instagram" aria-hidden="true" /></a>
+    <a href="https://t.me/gridmorphic" target="_blank" rel="noopener noreferrer" aria-label="Telegram channel (opens in a new tab)"><Icon name="telegram" aria-hidden="true" /></a>
+  </nav>
+  <div id="camera-preview" hidden aria-label="Live camera preview with tracking landmarks"><video id="camera" playsinline muted></video><canvas id="heatmap" width="160" height="120" hidden></canvas><canvas id="landmarks" width="640" height="480"></canvas><span id="preview-label">LIVE TRACKING</span><button id="preview-mode" type="button" aria-pressed="false" aria-label="Show brightness heatmap" title="Stylized brightness, not a temperature or depth sensor">Heatmap</button></div>
+  <div class="top-actions"><a class="github-link" href="https://github.com/Hosea174/octo-perspective" target="_blank" rel="noopener noreferrer" aria-label="View source on GitHub (opens in a new tab)"><Icon name="github" aria-hidden="true" /><span>GitHub</span></a><div class="camera-status" data-state="idle"><span class="camera-status__spinner" aria-hidden="true"></span><span id="status" role="status" aria-live="polite"></span><span id="hint"></span><button id="camera-toggle" type="button" hidden>Try camera again</button><button id="recenter" class="camera-status__recenter" type="button" aria-label="Recenter head tracking" title="Recenter head tracking" hidden><span>Recenter</span><Icon name="recenter" aria-hidden="true" /></button></div></div>
+  <div id="cursor" aria-hidden="true"><i class="cursor__pulse"></i><span></span></div>
+  <script>import '../scripts/playground'; import '../scripts/octo-motion';</script>
+</body>
+</html>
